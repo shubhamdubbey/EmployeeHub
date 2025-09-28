@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2025-09-05T10:19:53.115411300Z</date>
+  <millis>1757067593115</millis>
+  <nanos>411300</nanos>
+  <sequence>0</sequence>
+  <logger>org.apache.catalina.core.StandardService</logger>
+  <level>INFO</level>
+  <class>org.apache.catalina.core.StandardService</class>
+  <method>startInternal</method>
+  <thread>1</thread>
+  <message>Starting service [Tomcat]</message>
+</record>
+<record>
+  <date>2025-09-05T10:19:53.128923800Z</date>
+  <millis>1757067593128</millis>
+  <nanos>923800</nanos>
+  <sequence>1</sequence>
+  <logger>org.apache.catalina.core.StandardEngine</logger>
+  <level>INFO</level>
+  <class>org.apache.catalina.core.StandardEngine</class>
+  <method>startInternal</method>
+  <thread>1</thread>
+  <message>Starting Servlet engine: [Apache Tomcat/10.1.30]</message>
+</record>
+<record>
+  <date>2025-09-05T10:19:53.293691400Z</date>
+  <millis>1757067593293</millis>
+  <nanos>691400</nanos>
+  <sequence>2</sequence>
+  <logger>org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]</logger>
+  <level>INFO</level>
+  <class>org.apache.catalina.core.ApplicationContext</class>
+  <method>log</method>
+  <thread>1</thread>
+  <message>Initializing Spring embedded WebApplicationContext</message>
+</record>
+<record>
+  <date>2025-09-05T10:19:54.862408Z</date>
+  <millis>1757067594862</millis>
+  <nanos>408000</nanos>
+  <sequence>3</sequence>
+  <logger>org.hibernate.jpa.internal.util.LogHelper</logger>
+  <level>INFO</level>
+  <class>org.hibernate.jpa.internal.util.LogHelper</class>
+  <method>logPersistenceUnitInformation</method>
+  <thread>1</thread>
+  <message>HHH000204: Processing PersistenceUnitInfo [name: default]</message>
+</record>
+<record>
+  <date>2025-09-05T10:19:55.069273300Z</date>
+  <millis>1757067595069</millis>
+  <nanos>273300</nanos>
+  <sequence>4</sequence>
+  <logger>org.hibernate.Version</logger>
+  <level>INFO</level>
+  <class>org.hibernate.Version</class>
+  <method>logVersion</method>
+  <thread>1</thread>
+  <message>HHH000412: Hibernate ORM core version 6.5.3.Final</message>
+</record>
+<record>
+  <date>2025-09-05T10:19:55.190073800Z</date>
+  <millis>1757067595190</millis>
+  <nanos>73800</nanos>
+  <sequence>5</sequence>
+  <logger>org.hibernate.cache.internal.RegionFactoryInitiator</logger>
+  <level>INFO</level>
+  <class>org.hibernate.cache.internal.RegionFactoryInitiator</class>
+  <method>initiateService</method>
+  <thread>1</thread>
+  <message>HHH000026: Second-level cache disabled</message>
+</record>
+</log>

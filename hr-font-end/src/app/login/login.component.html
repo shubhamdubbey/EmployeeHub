@@ -1,0 +1,20 @@
+<div style = "width: 500px; padding-top: 130px;" class="container">
+    <form [formGroup]="loginForm" (ngSubmit)="checkLogin()">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" formControlName="username" required>
+          <span *ngIf = " username.invalid && username.touched ">
+          <p style="color: red;">Invalid username</p>
+          </span>
+        </div>
+        <div class="mb-3">
+          <label for="username" class="form-label">Password</label>
+            <input type="password" class="form-control" formControlName="password" required>
+            <span *ngIf = "password.invalid && password.touched">
+              <p style="color: red;">Invalid password</p>
+            </span>
+        </div>
+          <button type="submit" class="btn btn-dark" [disabled]="loginForm.invalid && show">Sign in</button>
+    </form>
+    <h6 *ngIf = "invalidCredentials" class="mb-3" style="color: red;">username/pasword is wrong</h6>
+  </div>

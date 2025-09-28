@@ -1,0 +1,34 @@
+<div class = "pagination">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"> Employee Id</th>
+        <th   scope="col"> First Name</th>
+        <th  scope="col"> Last Name</th>
+        <th   scope="col"> Phone Number</th>
+        <th   scope="col"> Email Id</th>
+        <th   scope="col">Role</th>
+        <th   scope="col">Grade Id</th>
+        <th scope = "col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let users of user | paginate:{ itemsPerPage : pageSize, currentPage : currentPage}">
+      
+        <td>{{users.employeeId}}</td>
+        <td>{{users.firstName}}</td>
+        <td>{{users.lastName}}</td>
+        <td>{{users.phoneNumber}}</td>
+        <td>{{users.emailAddress}}</td>
+        <td>{{users.role}}</td>
+        <td>{{users.grade_id}}</td>
+        <td>
+          <button style="width: 100px; margin-bottom: 10px;" [routerLink]="['/updateEmployeeGrade',users.employeeId]" class="btn btn-dark btn-sm">Update</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+    
+</div>
+
+<pagination-controls class = "custom-pagination" (pageChange)="currentPage = $event"></pagination-controls>

@@ -1,0 +1,10 @@
+com.cts.hr
+com.cts.hr.controller
+com.cts.hr.dto
+com.cts.hr.entity
+com.cts.hr.globalexceptionhandler
+com.cts.hr.logging
+com.cts.hr.repository
+com.cts.hr.service
+com.cts.hr.utility
+com.cts.test

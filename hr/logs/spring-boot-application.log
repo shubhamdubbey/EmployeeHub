@@ -1,0 +1,65 @@
+2025-04-21T12:46:05.532+05:30  INFO 9732 --- [restartedMain] com.cts.hr.HrApplication                 : Starting HrApplication using Java 23.0.1 with PID 9732 (C:\Users\2317222\SpringBootProjects\hr\target\classes started by 2317222 in C:\Users\2317222\SpringBootProjects\hr)
+2025-04-21T12:46:05.556+05:30  INFO 9732 --- [restartedMain] com.cts.hr.HrApplication                 : No active profile set, falling back to 1 default profile: "default"
+2025-04-21T12:46:05.657+05:30  INFO 9732 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-04-21T12:46:05.658+05:30  INFO 9732 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-04-21T12:46:06.988+05:30  INFO 9732 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-21T12:46:07.093+05:30  INFO 9732 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 88 ms. Found 3 JPA repository interfaces.
+2025-04-21T12:46:08.362+05:30  INFO 9732 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8090 (http)
+2025-04-21T12:46:08.401+05:30  INFO 9732 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-04-21T12:46:08.401+05:30  INFO 9732 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.33]
+2025-04-21T12:46:08.504+05:30  INFO 9732 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-04-21T12:46:08.504+05:30  INFO 9732 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2846 ms
+2025-04-21T12:46:08.583+05:30  INFO 9732 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-04-21T12:46:08.779+05:30  INFO 9732 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-04-21T12:46:08.779+05:30  INFO 9732 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-04-21T12:46:08.795+05:30  INFO 9732 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'
+2025-04-21T12:46:09.152+05:30  INFO 9732 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-21T12:46:09.311+05:30  INFO 9732 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.2.Final
+2025-04-21T12:46:09.362+05:30  INFO 9732 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-04-21T12:46:09.677+05:30  INFO 9732 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-21T12:46:09.756+05:30  INFO 9732 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-21T12:46:10.753+05:30  INFO 9732 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-21T12:46:10.831+05:30  INFO 9732 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-21T12:46:11.547+05:30  WARN 9732 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-21T12:46:12.716+05:30  WARN 9732 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
+2025-04-21T12:46:12.769+05:30  INFO 9732 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8090 (http) with context path '/'
+2025-04-21T12:46:12.777+05:30  INFO 9732 --- [restartedMain] com.cts.hr.HrApplication                 : Started HrApplication in 7.858 seconds (process running for 8.552)
+2025-04-21T12:46:32.261+05:30  INFO 9732 --- [http-nio-8090-exec-7] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-21T12:46:32.261+05:30  INFO 9732 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-04-21T12:46:32.264+05:30  INFO 9732 --- [http-nio-8090-exec-7] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-04-21T12:46:32.340+05:30  INFO 9732 --- [http-nio-8090-exec-7] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T12:46:32.349+05:30  INFO 9732 --- [http-nio-8090-exec-7] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T12:46:32.389+05:30  WARN 9732 --- [http-nio-8090-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T12:46:34.148+05:30  INFO 9732 --- [http-nio-8090-exec-3] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T12:46:34.149+05:30  INFO 9732 --- [http-nio-8090-exec-3] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T12:46:34.154+05:30  WARN 9732 --- [http-nio-8090-exec-3] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T13:14:08.656+05:30  INFO 9732 --- [http-nio-8090-exec-10] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T13:14:08.657+05:30  INFO 9732 --- [http-nio-8090-exec-10] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T13:14:08.658+05:30  WARN 9732 --- [http-nio-8090-exec-10] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T13:14:10.685+05:30  INFO 9732 --- [http-nio-8090-exec-9] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T13:14:10.686+05:30  INFO 9732 --- [http-nio-8090-exec-9] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T13:14:10.687+05:30  WARN 9732 --- [http-nio-8090-exec-9] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T13:14:16.888+05:30  INFO 9732 --- [http-nio-8090-exec-5] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T13:14:16.889+05:30  INFO 9732 --- [http-nio-8090-exec-5] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T13:14:16.890+05:30  WARN 9732 --- [http-nio-8090-exec-5] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T13:14:23.017+05:30  INFO 9732 --- [http-nio-8090-exec-3] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T13:14:23.018+05:30  INFO 9732 --- [http-nio-8090-exec-3] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T13:14:23.019+05:30  WARN 9732 --- [http-nio-8090-exec-3] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T13:14:24.365+05:30  INFO 9732 --- [http-nio-8090-exec-5] com.cts.hr.aspect.LoggingAspect          : Entering method: ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception)
+2025-04-21T13:14:24.366+05:30  INFO 9732 --- [http-nio-8090-exec-5] com.cts.hr.aspect.LoggingAspect          : Method ResponseEntity com.cts.hr.globalexceptionhandler.GlobalExceptionHandler.exceptionHandler(Exception) returned with value: <400 BAD_REQUEST Bad Request,No static resource favicon.ico.,[]>
+2025-04-21T13:14:24.367+05:30  WARN 9732 --- [http-nio-8090-exec-5] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.]
+2025-04-21T13:43:24.654+05:30  WARN 9732 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=28m45s131ms18µs).
+2025-04-21T16:39:04.731+05:30  WARN 9732 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m8s238ms199µs400ns).
+2025-04-21T16:40:28.054+05:30  INFO 9732 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-21T16:40:28.093+05:30  INFO 9732 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-04-21T16:40:28.135+05:30  INFO 9732 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-21T16:40:28.233+05:30  WARN 9732 --- [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-04-21T16:40:28.234+05:30  INFO 9732 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-04-21T16:40:28.245+05:30  INFO 9732 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

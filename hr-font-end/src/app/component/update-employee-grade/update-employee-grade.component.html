@@ -1,0 +1,30 @@
+<div style="width: 400px; margin-left: 100px; margin-top: 30px;">
+  <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+      <table>
+        <tr>
+          <td><label style="margin-right: 30px;"
+             for="empId" class="form-label">Employee Id</label></td>
+          <td><input type="text" class="form-control" id="empId" name="empId" formControlName="id" readonly></td>
+        </tr>
+        <tr>
+          <td><label style="margin-right: 30px;" for = "empId" class="form-label">Grades Id</label></td>
+          <td>
+            <select class="form-select" name = "gradeId" id="gradeId" formControlName="gradeId">
+              <option *ngFor="let gradeId of grade" value={{gradeId.identification}}>{{gradeId.identification}}</option>
+          </select>
+          </td>
+        </tr>
+      </table>
+      <span *ngIf="updateForm.invalid && updateForm.touched">
+        <p style="color: red;">Select grade id</p>
+      </span>
+      <button [disabled]="updateForm.invalid" type="submit" class = "btn btn-dark">Update</button>
+  </form>
+  <div style = "margin-top: 15px;"[hidden]="!submitted">
+    <h6 style="color:red" *ngIf="ifError && check;else elseBlock">{{errorMessage}}</h6>
+  </div>
+</div>
+
+<ng-template #elseBlock>
+ <h6 style="color: green;" *ngIf="check">Updated Successfully...</h6>
+</ng-template>
