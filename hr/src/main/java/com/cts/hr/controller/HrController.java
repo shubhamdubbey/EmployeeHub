@@ -3,6 +3,8 @@ package com.cts.hr.controller;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.cts.hr.dto.*;
+import com.cts.hr.service.LeaveService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cts.hr.dto.GradesDTO;
-import com.cts.hr.dto.UsersDTO;
 import com.cts.hr.service.HrService;
 import com.cts.hr.utility.DuplicateAccountException;
 import com.cts.hr.utility.GradeUpdateRuleViolationException;
@@ -40,6 +40,9 @@ public class HrController {
 //    private Logger logger;
 	@Autowired
 	private HrService hrService;
+
+    @Autowired
+    private LeaveService leaveService;
 
     /**
      * Handles the home onboaring page
@@ -152,4 +155,31 @@ public class HrController {
 		}
 		return responseEntity;
 	}
+
+    /**
+     * Handles Retrieval of all Leaves for an Employee
+     * @return ResponseEntity<LeavesDto>
+     *
+     */
+    @GetMapping("getLeaves/{empId}")
+    public ResponseEntity<LeavesDto>  returnLeavesList(@PathVariable("empId") int empId){
+
+        LeavesDto leavesDto = leaveService.getLeaveById(empId);
+        ResponseEntity<LeavesDto> responseEntity = new ResponseEntity<>(leavesDto, HttpStatus.OK);;
+
+        return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of all Leaves for an Employee
+     * @return ResponseEntity<List<UsersDTO>>
+     *
+     */
+    @GetMapping("applyLeaves")
+    public ResponseEntity<LeaveRequestResponseDto>  applyLeave(@RequestBody LeaveRequestDto leaveRequestDto){
+
+        ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;
+
+        return responseEntity;
+    }
 }
