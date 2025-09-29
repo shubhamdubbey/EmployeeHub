@@ -52,6 +52,10 @@ public class Users {
 	@JoinColumn(name = "current_grade_id")
 	private Grades grades;
 
+    @ManyToOne(targetEntity = HomeManager.class)
+    @JoinColumn(name = "employee_id")
+    private HomeManager homeManager;
+
 	public void setRoles(Roles roles) {
 		this.role = roles;
 	}

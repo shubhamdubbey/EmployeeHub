@@ -3,6 +3,7 @@ package com.cts.hr.controller;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.cts.hr.dto.HomeManagerDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,47 @@ public class HrController {
 		UsersDTO response=hrService.getEmployeeById(empId);
 		return new ResponseEntity<UsersDTO>(response,HttpStatus.OK);
 	}
-	
+
+    /**
+     * Handles Retrieval of all employees that are manager of someone
+     * @return ResponseEntity<List<HomeManagerDTO>>
+     *
+     */
+    @GetMapping("homeManagerList")
+    public ResponseEntity<List<HomeManagerDTO>>  retrieveHomeManagerList(){
+        List<HomeManagerDTO> responseList = hrService.getHomeManagerList();
+        ResponseEntity<List<HomeManagerDTO>> responseEntity = null;
+        if(!responseList.isEmpty()) {
+            responseEntity = new ResponseEntity<List<HomeManagerDTO>>(responseList, HttpStatus.OK);
+        }
+        else {
+            responseEntity=new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of employee of given ID
+     * @return ResponseEntity<HomeManagerDTO>
+     *
+     */
+    @GetMapping("manager/{empId}")
+    public ResponseEntity<HomeManagerDTO> retrieveManagerById(@PathVariable("empId")int empId) throws InvalidInputException{
+        HomeManagerDTO response=hrService.getHomeManagerById(empId);
+        return new ResponseEntity<HomeManagerDTO>(response,HttpStatus.OK);
+    }
+
+    /**
+     * Handles Retrieval of employee of given ID
+     * @return ResponseEntity<HomeManagerDTO>
+     *
+     */
+    @PutMapping("updateManager/{empId}/{manId}")
+    public ResponseEntity<String> updateaManager(@PathVariable("empId")int empId, @PathVariable("managerId")int manId) {
+        String response = hrService.updateHomeManager(manId, empId);
+        return new ResponseEntity<>(response, response.equals("success") ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
 	/** 
 	 * Handles adding new employee
 	 * @return ResponseEntity<String>

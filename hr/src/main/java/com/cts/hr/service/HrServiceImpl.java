@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.extern.slf4j.XSlf4j;
-import org.slf4j.Logger;
+import com.cts.hr.dto.HomeManagerDTO;
+import com.cts.hr.entity.HomeManager;
+import com.cts.hr.repository.HomeManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,8 @@ import jakarta.transaction.Transactional;
 @Slf4j
 public class HrServiceImpl implements HrService{
 
+    @Autowired
+    private HomeManagerRepository homeManagerRepository;
 	@Autowired
 	private UsersRepository usersRepository;
 	@Autowired
@@ -101,6 +104,14 @@ public class HrServiceImpl implements HrService{
 		}
 		
 		users.setGrades(grades.get());
+
+        Optional<HomeManager> homeManager = homeManagerRepository.findById(usersDTO.getManagerId());
+        if(homeManager.isPresent()){
+            users.setHomeManager(homeManager.get());
+            homeManager.get().getReportees().add(users);
+            homeManagerRepository.save(homeManager.get());
+        }
+        else return "fail";
 				
 		GradesHistory gradesHistory = new GradesHistory();
 		gradesHistory.setAssignedon(LocalDate.now());		
@@ -198,4 +209,41 @@ public class HrServiceImpl implements HrService{
 		return gradesDTOList;
 		
 	}
+
+    @Override
+    public List<HomeManagerDTO> getHomeManagerList() {
+        List<HomeManagerDTO> listOfManagers = new ArrayList<HomeManagerDTO>();
+        for(HomeManager homeManager:homeManagerRepository.findAll()) {
+            HomeManagerDTO homeManagerDTO = new HomeManagerDTO();
+            homeManagerDTO.setId(homeManager.getEmployeeId());
+            homeManagerDTO.setName(homeManagerDTO.getName());
+            homeManagerDTO.setDesignation(homeManagerDTO.getDesignation());
+
+            listOfManagers.add(homeManagerDTO);
+        }
+        return listOfManagers;
+    }
+
+    @Override
+    public HomeManagerDTO getHomeManagerById(int id) throws InvalidInputException {
+        Optional<HomeManager> homeManager = homeManagerRepository.findById(id);
+        HomeManagerDTO homeManagerDTO = new HomeManagerDTO();
+        if(homeManager.isPresent()){
+            homeManagerDTO.setId(homeManager.get().getEmployeeId());
+            homeManagerDTO.setName(homeManagerDTO.getName());
+            homeManagerDTO.setDesignation(homeManagerDTO.getDesignation());
+        }
+        return homeManagerDTO;
+    }
+
+    @Override
+    public String updateHomeManager(int managerId, int userId) throws IllegalArgumentException{
+        Optional<HomeManager> homeManager = homeManagerRepository.findById(managerId);
+        if(homeManager.isEmpty()) throw new IllegalArgumentException("Invalid manager's employee id");
+        Optional<Users> users = usersRepository.findById(userId);
+        if(users.isEmpty()) throw new IllegalArgumentException("Invalid user's employee id");
+        users.get().setHomeManager(homeManager.get());
+        return "success";
+    }
+
 }

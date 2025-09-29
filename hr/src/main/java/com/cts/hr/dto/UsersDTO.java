@@ -18,6 +18,7 @@ public class UsersDTO {
 	private String EmailAddress;
 	private Roles role;
 	private int grade_id;
+    private int managerId;
 	
 	public void setRoles(Roles role) {
 		// TODO Auto-generated method stub
