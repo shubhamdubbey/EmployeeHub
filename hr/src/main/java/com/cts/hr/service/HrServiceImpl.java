@@ -78,7 +78,6 @@ public class HrServiceImpl implements HrService{
 	}
 	
 	public String persistNewEmployees(UsersDTO usersDTO) throws DuplicateAccountException {
-        log.info("Inside service class in persisiEmployee() method");
 		Optional<Users> existingUser = usersRepository.findById(usersDTO.getEmployeeId());
 		if(existingUser.isPresent()) {
 			throw new DuplicateAccountException("Employee with ID: " + usersDTO.getEmployeeId() + " is already present.");
@@ -96,7 +95,6 @@ public class HrServiceImpl implements HrService{
 
 		if(grades.isEmpty()) 
 		{
-            log.info("Fail because grade is not there.");
 			return "fail";
 		}
 		
@@ -109,11 +107,9 @@ public class HrServiceImpl implements HrService{
 		Users usersCreated=usersRepository.save(users);
 		if(usersCreated!=null) {
 			gradesHistoryRepository.save(gradesHistory);
-            log.info("Process is success.");
 			return "success";
 		}
 		else {
-            log.info("It is fail, donno why!!!");
 		    return "fail";}
 	}
 

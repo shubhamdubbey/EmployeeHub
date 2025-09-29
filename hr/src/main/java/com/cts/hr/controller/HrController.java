@@ -1,7 +1,6 @@
 package com.cts.hr.controller;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +35,6 @@ import com.cts.hr.utility.InvalidInputException;
 @Tag(name = "HR Controller", description = "Endpoints for managing employees")
 public class HrController {
 
-//    @Autowired
-//    private Logger logger;
 	@Autowired
 	private HrService hrService;
 
@@ -68,12 +65,10 @@ public class HrController {
 	 */
 	@PostMapping("employees")
 	public ResponseEntity<String> persistEmployee(@RequestBody UsersDTO usersDto) throws DuplicateAccountException, InvalidInputException{
-        log.info("I am inside the controller");
         if(usersDto.getEmployeeId() == 0) {
 			throw new InvalidInputException("Input is invalid");
 		}
 		String result=hrService.persistNewEmployees(usersDto);
-        log.info("Result while persisting data into DB : " + result);
 		if(result.equals("success")) {
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}else {
