@@ -1,22 +1,14 @@
 -- Drop tables if exist (for clean setup)
 DROP TABLE IF EXISTS gradeshistory;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS authenticatedusers;
 DROP TABLE IF EXISTS grades;
+DROP TABLE IF EXISTS login_details;
 
 -- Create grades table
 CREATE TABLE grades (
                         id INT NOT NULL,
                         name VARCHAR(25),
                         PRIMARY KEY (id)
-);
-
--- Create authenticatedusers table
-CREATE TABLE authenticatedusers (
-                                    user_name VARCHAR(30) NOT NULL,
-                                    password VARCHAR(10) NOT NULL,
-                                    role VARCHAR(20),
-                                    PRIMARY KEY (user_name)
 );
 
 -- Create users table
@@ -34,6 +26,14 @@ CREATE TABLE users (
                            phone_number ~ '^[0-9]{10}$' OR phone_number = ''
 )
     );
+
+-- Create LoginDetails table
+CREATE TABLE login_details (
+                                username VARCHAR(50) PRIMARY KEY,
+                                password VARCHAR(255) NOT NULL,
+                                roles VARCHAR(50) NOT NULL
+);
+
 
 -- Create gradeshistory table
 CREATE TABLE gradeshistory (
