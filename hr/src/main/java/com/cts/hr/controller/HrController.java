@@ -2,11 +2,19 @@ package com.cts.hr.controller;
 
 import java.util.List;
 
+import com.cts.hr.dto.LoginDetailsDto;
+import com.cts.hr.jwtSecurity.JwtHelper;
+import com.cts.hr.model.JwtResponse;
+import com.cts.hr.service.LoginService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,13 +46,27 @@ public class HrController {
 	@Autowired
 	private HrService hrService;
 
-    /**
-     * Handles the home onboaring page
-     * @return ResponseEntity<String>
-     */
-    @RequestMapping("/")
-    public ResponseEntity<String> welcomeHomePage(){
-        return new ResponseEntity<>("Welcome to the HR Application", HttpStatus.OK);
+    @Autowired
+    private LoginService loginService;
+
+    @Autowired
+    private JwtHelper jwtHelper;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginDetailsDto loginDetails) {
+
+        jwtHelper.doAuthenticate(loginDetails.getUsername(), loginDetails.getPassword());
+
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginDetails.getUsername());
+        System.out.println(userDetails.getAuthorities());
+        String token = jwtHelper.generateToken(userDetails);
+
+        JwtResponse jwtResponse = new JwtResponse(token, loginDetails.getUsername(), userDetails.getAuthorities().toString());
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
     /**
@@ -52,10 +74,11 @@ public class HrController {
 	 * @return ResponseEntity<UsersDTO>
 	 * 
 	 */
-	@GetMapping("employees/{empId}")
+	@GetMapping("getEmployeeById/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE','TRAVELDESKEXC')")
 	public ResponseEntity<UsersDTO> retrieveEmployeeById(@PathVariable("empId")int empId) throws InvalidInputException{
 		UsersDTO response=hrService.getEmployeeById(empId);
-		return new ResponseEntity<UsersDTO>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
 	/** 
@@ -63,7 +86,8 @@ public class HrController {
 	 * @return ResponseEntity<String>
 	 * 
 	 */
-	@PostMapping("employees")
+	@PostMapping("addEmployee")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<String> persistEmployee(@RequestBody UsersDTO usersDto) throws DuplicateAccountException, InvalidInputException{
         if(usersDto.getEmployeeId() == 0) {
 			throw new InvalidInputException("Input is invalid");
@@ -81,7 +105,8 @@ public class HrController {
 	 * @return ResponseEntity<UsersDTO>
 	 * 
 	 */
-	@PutMapping("employees/{empId}/{newGrade}")
+	@PutMapping("updateEmployeesGrade/{empId}/{newGrade}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<?> updateEmployeeGrade(@PathVariable("empId")int empId,@PathVariable("newGrade")int newGrade) throws GradeUpdateRuleViolationException{
 		
 			String result=hrService.updateEmployeeGarde(empId, newGrade);
@@ -100,6 +125,7 @@ public class HrController {
 	 * 
 	 */
 	@DeleteMapping("deleteEmployee/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<String> deleteEmployeeById(@PathVariable("empId")int empId){
 		String result=hrService.deleteEmployee(empId);
 		if(result.equals("success")) {
@@ -115,6 +141,7 @@ public class HrController {
 	 * 
 	 */
 	@GetMapping("getEmployees")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<List<UsersDTO>> returnEmployeeList(){
 
 		List<UsersDTO> responseList = hrService.returnEmployeeList();
@@ -134,6 +161,7 @@ public class HrController {
 	 * 
 	 */
 	@GetMapping("grades")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<List<GradesDTO>> returnGradesList(){
         System.out.println("Inside grades controller");
 		List<GradesDTO> responseList = hrService.returnGradesList();
