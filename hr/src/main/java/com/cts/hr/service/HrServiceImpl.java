@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.cts.hr.entity.LoginDetails;
+import com.cts.hr.repository.LoginDetailsRepository;
 import lombok.extern.slf4j.XSlf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cts.hr.dto.GradesDTO;
@@ -42,8 +46,12 @@ public class HrServiceImpl implements HrService{
 	private GradesHistoryRepository gradesHistoryRepository;
 	@Autowired
 	private GradesUpdateBusinessLogic gradesUpdateBusinessLogic;
-	
-	@Override
+    @Autowired
+    private LoginDetailsRepository loginDetailsRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
 	public String updateEmployeeGarde(int id, int grade_id) throws GradeUpdateRuleViolationException{
 		Optional<Users> optionalOfUsers=usersRepository.findById(id);
 		if(optionalOfUsers.isEmpty()) return "fail";
@@ -76,42 +84,55 @@ public class HrServiceImpl implements HrService{
 		return "fail";
 			
 	}
-	
-	public String persistNewEmployees(UsersDTO usersDTO) throws DuplicateAccountException {
-		Optional<Users> existingUser = usersRepository.findById(usersDTO.getEmployeeId());
-		if(existingUser.isPresent()) {
-			throw new DuplicateAccountException("Employee with ID: " + usersDTO.getEmployeeId() + " is already present.");
-		}
-		
-		Users users=new Users();
-		users.setEmployeeId(usersDTO.getEmployeeId());
-		users.setFirstName(usersDTO.getFirstName());
-		users.setLastName(usersDTO.getLastName());
-		users.setEmailAddress(usersDTO.getEmailAddress());
-		users.setRoles(usersDTO.getRoles());
-		users.setPhoneNumber(usersDTO.getPhoneNumber());
-		
-		Optional<Grades> grades = gradesRepository.findById(usersDTO.getGrade_id());
 
-		if(grades.isEmpty()) 
-		{
-			return "fail";
-		}
-		
-		users.setGrades(grades.get());
-				
-		GradesHistory gradesHistory = new GradesHistory();
-		gradesHistory.setAssignedon(LocalDate.now());		
-		gradesHistory.setGrades(grades.get());
-		gradesHistory.setUsers(users);
-		Users usersCreated=usersRepository.save(users);
-		if(usersCreated!=null) {
-			gradesHistoryRepository.save(gradesHistory);
-			return "success";
-		}
-		else {
-		    return "fail";}
-	}
+    @Transactional
+	public String persistNewEmployees(UsersDTO usersDTO) throws DuplicateAccountException {
+        if (usersDTO.getEmployeeId() == 0 || usersDTO.getFirstName() == null || usersDTO.getEmailAddress() == null) {
+            throw new IllegalArgumentException("Employee ID, First Name, and Email are required.");
+        }
+
+        if (usersRepository.findById(usersDTO.getEmployeeId()).isPresent()) {
+            throw new DuplicateAccountException("Employee with ID: " + usersDTO.getEmployeeId() + " already exists.");
+        }
+
+        if (usersRepository.existsByEmailAddress(usersDTO.getEmailAddress())) {
+            throw new DuplicateAccountException("Email already registered: " + usersDTO.getEmailAddress());
+        }
+
+        // ✅ Create User object
+        Users users = new Users();
+        users.setEmployeeId(usersDTO.getEmployeeId());
+        users.setFirstName(usersDTO.getFirstName());
+        users.setLastName(usersDTO.getLastName());
+        users.setEmailAddress(usersDTO.getEmailAddress());
+        users.setRoles(usersDTO.getRoles());
+        users.setPhoneNumber(usersDTO.getPhoneNumber());
+
+        Optional<Grades> grades = gradesRepository.findById(usersDTO.getGrade_id());
+        if (grades.isEmpty()) {
+            throw new IllegalArgumentException("Invalid grade ID: " + usersDTO.getGrade_id());
+        }
+        users.setGrades(grades.get());
+
+        Users usersCreated = usersRepository.save(users);
+
+        GradesHistory gradesHistory = new GradesHistory();
+        gradesHistory.setAssignedon(LocalDate.now());
+        gradesHistory.setGrades(grades.get());
+        gradesHistory.setUsers(usersCreated);
+        gradesHistoryRepository.save(gradesHistory);
+
+        LoginDetails loginDetails = new LoginDetails();
+        loginDetails.setUsername(String.valueOf(usersCreated.getEmployeeId()));
+        loginDetails.setRoles(usersCreated.getRoles());
+
+        String rawPassword = usersCreated.getFirstName().toLowerCase() + "@" + usersCreated.getEmployeeId();
+        loginDetails.setPassword(passwordEncoder.encode(rawPassword));
+
+        loginDetailsRepository.save(loginDetails);
+
+        return "success";
+    }
 
 	@Override
 	public List<UsersDTO> returnEmployeeList() {

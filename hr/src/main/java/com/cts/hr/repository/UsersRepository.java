@@ -8,5 +8,6 @@ import com.cts.hr.entity.Users;
 
 @Repository
 public interface UsersRepository extends CrudRepository<Users,Integer> {
+    boolean existsByEmailAddress(String emailAddress);
 
 }

@@ -30,6 +30,8 @@ public class LoginDetails {
         return password;
     }
 
+    public void setPassword(String password) {this.password = password;}
+
     public Roles getRoles() {
         return roles;
     }
