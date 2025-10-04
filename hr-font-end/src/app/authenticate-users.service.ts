@@ -1,75 +1,44 @@
-  import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-  import { Injectable } from '@angular/core';
-  import { AuthenticateUsers } from '../models/authenticate';
-  import { firstValueFrom, catchError, throwError } from 'rxjs';
-  
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class AuthenticateUsersService {
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthenticateUsers } from '../models/authenticate';
+import { AuthResponse } from '../models/authresponse';
 
-    constructor(private http:HttpClient) { 
-      this.invalidCredentials = false;
-    }
-    authenticatedUrl : string = "http://localhost:8090/api/authenticate";
-    authentiCatedUserBacked : AuthenticateUsers;
-    authenticated : boolean;
-    authenticateUser : AuthenticateUsers;
-    invalidCredentials : boolean = false;
-    errorMEssage : string = '';
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthenticateUsersService {
 
-  //   getAuthenticatedUser(user:AuthenticateUsers){
-  //     return firstValueFrom(this.http.post<AuthenticateUsers>(this.authenticatedUrl,user).pipe(
-  //       catchError(this.handleError)
-  //     ));
-  //   }
-    
-  //   private handleError(error: HttpErrorResponse) {
-  //     return throwError(() => new Error("invalid credentials"));
-  //   }
+  private authenticatedUrl: string = "http://localhost:8090/api/login";
 
-  //   async authenticate(userName, passWord){
-  //     this.authentiCatedUser = new AuthenticateUsers();
-  //     this.authentiCatedUser.userName = userName;
-  //     this.authentiCatedUser.passWord = passWord;
+  constructor(private http: HttpClient) {}
 
-  //   this.authentiCatedUserBacked = await this.getAuthenticatedUser(this.authentiCatedUser);
+  authenticate(userName: string, password: string): Observable<AuthResponse> {
+    console.log(userName + " " + password);
+    const authRequest: AuthenticateUsers = {
+      username: userName,
+      password: password
+    };
 
-  //   if(this.authentiCatedUser.userName === this.authentiCatedUserBacked.userName){
-  //     this.authenticated = true;
-  //     sessionStorage.setItem('username',this.authentiCatedUser.userName);
-  //   }
-  //   else{
-  //     this.authenticated = false;
-  //   }
-  //   return this.authenticated;
-  // }
-
-  authenticate(userName : string, password : string){
-    this.authenticateUser = new AuthenticateUsers();
-    this.authenticateUser.userName = userName;
-    this.authenticateUser.passWord = password;
-
-    // this.http.post<AuthenticateUsers>(this.authenticatedUrl,this.authenticateUser).subscribe(
-    //   (data) => {
-    //     this.authenticateUser = data;
-    //     console.log(this.authenticateUser);
-    //     sessionStorage.setItem("username",data.userName);
-    //   },
-    //   (error) => {
-    //     this.authenticated = false;
-    //   }
-    // )
-
-    return this.http.post<AuthenticateUsers>(this.authenticatedUrl,this.authenticateUser);
+    return this.http.post<AuthResponse>(this.authenticatedUrl, authRequest);
   }
-    isUserLoggedIn(){
-      let username = sessionStorage.getItem('username');
-      return !(username === null);
-    }
 
-    logOut(){
-      sessionStorage.removeItem('username');
-    }
-
+  isUserLoggedIn(): boolean {
+    return sessionStorage.getItem('username') !== null;
   }
+
+  getUserRole(): string {
+    return sessionStorage.getItem('role') || '';
+  }
+
+  hasRole(requiredRoles: string[]): boolean {
+    const userRole = this.getUserRole();
+    return requiredRoles.some(role => userRole.includes(role));
+  }
+
+  logOut(): void {
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
+  }
+}
