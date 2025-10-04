@@ -5,14 +5,12 @@ import java.util.List;
 import com.cts.hr.dto.LoginDetailsDto;
 import com.cts.hr.jwtSecurity.JwtHelper;
 import com.cts.hr.model.JwtResponse;
-import com.cts.hr.service.LoginService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,9 +43,6 @@ public class HrController {
 
 	@Autowired
 	private HrService hrService;
-
-    @Autowired
-    private LoginService loginService;
 
     @Autowired
     private JwtHelper jwtHelper;
