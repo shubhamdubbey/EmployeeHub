@@ -1,25 +1,36 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" routerLink="home" >Human Resource</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a [hidden]="!autheticateUsersService.isUserLoggedIn()" class="nav-link active" routerLink="retrieveEmployees" routerLinkActive="active">Retrive Employees</a>
-          <a [hidden]="!autheticateUsersService.isUserLoggedIn()" class="nav-link active" routerLink="retrieveEmployeeById" routerLinkActive="active">Search Employee</a>
-          <a [hidden]="!autheticateUsersService.isUserLoggedIn()" class="nav-link active " routerLink="addEmployee" routerLinkActive="active">Add Employee</a>
-        </div>
-      </div>
-      <div>
-        <ul class = "navbar-nav">
-          <li class = "navbar-item">
-            <a [hidden]="!autheticateUsersService.isUserLoggedIn()" class="nav-link active " (click)="logout()" routerLinkActive="active">Logout</a>
-          </li>
-        </ul>
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="home">Human Resource</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+
+        <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR'])"
+           class="nav-link active" routerLink="retrieveEmployees" routerLinkActive="active">Retrieve Employees</a>
+
+        <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR','ROLE_EMPLOYEE'])"
+           class="nav-link active" routerLink="retrieveEmployeeById" routerLinkActive="active">Search Employee</a>
+
+        <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR'])"
+           class="nav-link active" routerLink="addEmployee" routerLinkActive="active">Add Employee</a>
+
       </div>
     </div>
-  </nav>
-<div class = "container">
+    <div>
+      <ul class="navbar-nav">
+        <li class="navbar-item">
+          <a *ngIf="autheticateUsersService.isUserLoggedIn()" class="nav-link active" 
+             (click)="logout()" routerLinkActive="active">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
   <router-outlet></router-outlet>
 </div>

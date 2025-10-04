@@ -1,5 +1,4 @@
 export class AuthenticateUsers{
-    userName:string;
-    passWord:string;
-    roles:string;
+    username:string;
+    password:string;
 }

@@ -11,8 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
 @Table(name = "grades")
 
 public class Grades {
@@ -29,5 +27,36 @@ public class Grades {
 	
 	@OneToMany(mappedBy = "id", targetEntity = GradesHistory.class)
 	private List<GradesHistory> gradeshistory;
-	
+
+    public int getIdentification() {
+        return identification;
+    }
+
+    public void setIdentification(int identification) {
+        this.identification = identification;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public List<Users> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<Users> users) {
+        this.users = users;
+    }
+
+    public List<GradesHistory> getGradeshistory() {
+        return gradeshistory;
+    }
+
+    public void setGradeshistory(List<GradesHistory> gradeshistory) {
+        this.gradeshistory = gradeshistory;
+    }
 }

@@ -11,15 +11,16 @@ import { AuthenticateGuardService } from './authenticate-guard.service';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
-  { path : 'home',component : HomeComponent, canActivate:[AuthenticateGuardService] },
-  { path : 'login',component : LoginComponent },
-  { path : '', redirectTo : "login", pathMatch : "full" },
-  { path: 'retrieveEmployeeById', component: RetrieveEmployeeByIdComponent, canActivate:[AuthenticateGuardService] },
-  { path: 'retrieveEmployees', component: RetrieveEmployeesComponent, canActivate:[AuthenticateGuardService] },
-  { path: 'addEmployee', component: AddEmployeesComponent, canActivate:[AuthenticateGuardService] },
-  { path: 'updateEmployeeGrade/:empId', component: UpdateEmployeeGradeComponent , canActivate:[AuthenticateGuardService]},
-  { path: 'updateEmployeeGrade/:empId', component: UpdateEmployeeGradeComponent , canActivate:[AuthenticateGuardService]},
-  { path : '**', component: NotFoundComponent}
+  { path: 'home', component: HomeComponent, canActivate: [AuthenticateGuardService] },
+  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: "login", pathMatch: "full" },
+
+  { path: 'retrieveEmployeeById', component: RetrieveEmployeeByIdComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'] }},
+  { path: 'retrieveEmployees', component: RetrieveEmployeesComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR'] }},
+  { path: 'addEmployee', component: AddEmployeesComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR'] }},
+  { path: 'updateEmployeeGrade/:empId', component: UpdateEmployeeGradeComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR'] }},
+
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
