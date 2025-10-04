@@ -145,14 +145,7 @@ public class HrController {
 	public ResponseEntity<List<UsersDTO>> returnEmployeeList(){
 
 		List<UsersDTO> responseList = hrService.returnEmployeeList();
-		ResponseEntity<List<UsersDTO>> responseEntity = null;
-		if(!responseList.isEmpty()) {
-			responseEntity = new ResponseEntity<List<UsersDTO>>(responseList, HttpStatus.OK);
-		}
-		else {
-			responseEntity=new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		return responseEntity;
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
 	}
 	
 	/** 
