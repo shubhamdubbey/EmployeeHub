@@ -3,6 +3,7 @@ package com.cts.hr.utility;
 public enum Roles {
 
 	EMPLOYEES("Employees"),
+    ADMIN("Admin"),
 	HR("HR"),
 	TRAVELDESKEXC("TravelDeskExe");
 
@@ -16,4 +17,3 @@ public enum Roles {
 		return roles;
 	}
 }
-	
