@@ -9,7 +9,6 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "LeaveTracker")
-@Data
 public class LeaveTracker {
 
     @Id
@@ -31,4 +30,52 @@ public class LeaveTracker {
 
     @Column(name = "reason")
     private String reason;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public LeaveType getLeaveType() {
+        return leaveType;
+    }
+
+    public void setLeaveType(LeaveType leaveType) {
+        this.leaveType = leaveType;
+    }
+
+    public LocalDate getFrom() {
+        return from;
+    }
+
+    public void setFrom(LocalDate from) {
+        this.from = from;
+    }
+
+    public LocalDate getTo() {
+        return to;
+    }
+
+    public void setTo(LocalDate to) {
+        this.to = to;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 }
