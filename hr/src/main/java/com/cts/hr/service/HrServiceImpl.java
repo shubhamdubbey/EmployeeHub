@@ -5,23 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.cts.hr.entity.LoginDetails;
-import com.cts.hr.repository.LoginDetailsRepository;
-import lombok.extern.slf4j.XSlf4j;
-import org.slf4j.Logger;
+import com.cts.hr.entity.*;
+import com.cts.hr.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cts.hr.dto.GradesDTO;
 import com.cts.hr.dto.UsersDTO;
-import com.cts.hr.entity.Grades;
-import com.cts.hr.entity.GradesHistory;
-import com.cts.hr.entity.Users;
-import com.cts.hr.repository.GradesHistoryRepository;
-import com.cts.hr.repository.GradesRepository;
-import com.cts.hr.repository.UsersRepository;
 import com.cts.hr.utility.DuplicateAccountException;
 import com.cts.hr.utility.GradeUpdateRuleViolationException;
 import com.cts.hr.utility.GradesUpdateBusinessLogic;
@@ -48,6 +39,8 @@ public class HrServiceImpl implements HrService{
 	private GradesUpdateBusinessLogic gradesUpdateBusinessLogic;
     @Autowired
     private LoginDetailsRepository loginDetailsRepository;
+    @Autowired
+    private LeaveRepository leaveRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -130,6 +123,15 @@ public class HrServiceImpl implements HrService{
         loginDetails.setPassword(passwordEncoder.encode(rawPassword));
 
         loginDetailsRepository.save(loginDetails);
+
+        Leaves leaves = new Leaves();
+        leaves.setEmployeeId(usersDTO.getEmployeeId());
+        leaves.setPaternityLeave(5);
+        int monthsRemaining = 12 - LocalDate.now().getMonthValue() + 1; // Including current month
+        leaves.setEarnedLeave((int) (monthsRemaining * 1.5));
+        leaves.setCasualLeave((int) (monthsRemaining * 0.5));
+        leaves.setSickLeave(monthsRemaining);
+        leaveRepository.save(leaves);
 
         return "success";
     }

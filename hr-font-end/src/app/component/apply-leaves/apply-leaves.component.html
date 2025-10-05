@@ -1,0 +1,59 @@
+<div style="width: 500px; margin-left: 100px; margin-top: 30px;">
+  <form [formGroup]="leaveForm" (ngSubmit)="onSubmit()">
+    
+    <!-- From Date -->
+    <div class="mb-3">
+      <label for="fromDate" class="form-label">Start Date :</label>
+      <input type="date" class="form-control" id="fromDate" formControlName="fromDate">
+      <span *ngIf="leaveForm.controls.fromDate.invalid && leaveForm.controls.fromDate.touched">
+        <p style="color: red;">Start date is required</p>
+      </span>
+    </div>
+
+    <!-- To Date -->
+    <div class="mb-3">
+      <label for="toDate" class="form-label">End Date :</label>
+      <input type="date" class="form-control" id="toDate" formControlName="toDate">
+      <span *ngIf="leaveForm.controls.toDate.invalid && leaveForm.controls.toDate.touched">
+        <p style="color: red;">End date is required</p>
+      </span>
+    </div>
+
+    <!-- Leave Type -->
+    <div class="mb-3">
+      <label for="leaveType" class="form-label">Leave Type :</label>
+      <select class="form-control" id="leaveType" formControlName="leaveType">
+        <option value="">-- Select Leave Type --</option>
+        <option *ngFor="let type of leaveTypes" [value]="type.key">
+          {{ type.label }}
+        </option>
+      </select>
+      <span *ngIf="leaveForm.controls.leaveType.invalid && leaveForm.controls.leaveType.touched">
+        <p style="color: red;">Leave type is required</p>
+      </span>
+    </div>
+
+    <!-- Reason -->
+    <div class="mb-3">
+      <label for="reason" class="form-label">Reason :</label>
+      <textarea class="form-control" id="reason" formControlName="reason" placeholder="Reason for leave"></textarea>
+      <span *ngIf="leaveForm.controls.reason.invalid && leaveForm.controls.reason.touched">
+        <p style="color: red;">Reason is required</p>
+      </span>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttonContainer">
+      <button [disabled]="leaveForm.invalid" type="submit" class="btn btn-dark">Apply</button>
+      <button type="reset" class="btn btn-dark" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<!-- Success / Error messages -->
+<div *ngIf="successMessage" style="margin-left:100px; margin-top:20px; color:green;">
+  {{ successMessage }}
+</div>
+<div *ngIf="errorMessage" style="margin-left:100px; margin-top:20px; color:red;">
+  {{ errorMessage }}
+</div>

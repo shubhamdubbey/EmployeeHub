@@ -1,7 +1,10 @@
 package com.cts.hr.controller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import com.cts.hr.dto.*;
+import com.cts.hr.service.LeaveService;
 import com.cts.hr.dto.LoginDetailsDto;
 import com.cts.hr.jwtSecurity.JwtHelper;
 import com.cts.hr.model.JwtResponse;
@@ -23,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cts.hr.dto.GradesDTO;
-import com.cts.hr.dto.UsersDTO;
 import com.cts.hr.service.HrService;
 import com.cts.hr.utility.DuplicateAccountException;
 import com.cts.hr.utility.GradeUpdateRuleViolationException;
@@ -50,6 +51,9 @@ public class HrController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private LeaveService leaveService;
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginDetailsDto loginDetails) {
 
@@ -63,14 +67,13 @@ public class HrController {
         JwtResponse jwtResponse = new JwtResponse(token, loginDetails.getUsername(), userDetails.getAuthorities().toString());
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
-
     /**
 	 * Handles Retrieval of employee of given ID
 	 * @return ResponseEntity<UsersDTO>
 	 * 
 	 */
 	@GetMapping("getEmployeeById/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE','TRAVELDESKEXC')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
 	public ResponseEntity<UsersDTO> retrieveEmployeeById(@PathVariable("empId")int empId) throws InvalidInputException{
 		UsersDTO response=hrService.getEmployeeById(empId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
@@ -163,4 +166,47 @@ public class HrController {
 		}
 		return responseEntity;
 	}
+
+    /**
+     * Handles Retrieval of all Leaves for an Employee
+     * @return ResponseEntity<LeavesDto>
+     *
+     */
+    @GetMapping("getLeaves/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<LeavesDto>  returnLeavesList(@PathVariable("empId") int empId){
+
+        LeavesDto leavesDto = leaveService.getLeaveById(empId);
+        ResponseEntity<LeavesDto> responseEntity = new ResponseEntity<>(leavesDto, HttpStatus.OK);;
+
+        return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of all historical Leaves for an Employee
+     * @return ResponseEntity<List<LeaveTrackerDTO>>
+     *
+     */
+    @GetMapping("getLeavesHistory/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<List<LeaveTrackerDTO>> returnHistoricalLeaves(@PathVariable("empId") int empId){
+        List<LeaveTrackerDTO> listOfLeaves = leaveService.getHistoricalLevaesById(empId);
+        ResponseEntity<List<LeaveTrackerDTO>> responseEntity = new ResponseEntity<>(listOfLeaves, HttpStatus.OK);;
+
+        return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of all Leaves for an Employee
+     * @return ResponseEntity<List<UsersDTO>>
+     *
+     */
+    @PostMapping("applyLeaves")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<LeaveRequestResponseDto>  applyLeave(@RequestBody LeaveRequestDto leaveRequestDto){
+
+        ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;
+
+        return responseEntity;
+    }
 }

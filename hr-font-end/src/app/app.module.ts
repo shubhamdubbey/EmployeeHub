@@ -13,6 +13,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { AddEmployeesComponent } from './component/add-employees/add-employees.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { LeaveBalanceComponent } from './component/leave-balance/leave-balance.component';
+import { ApplyLeavesComponent } from './component/apply-leaves/apply-leaves.component';
+import { LeaveHistoryComponent } from './component/leave-history/leave-history.component';
+import { PersonalDetailsComponent } from './component/personal-details/personal-details.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
     UpdateEmployeeGradeComponent,
     RetrieveEmployeeByIdComponent,
     AddEmployeesComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    LeaveBalanceComponent,
+    ApplyLeavesComponent,
+    LeaveHistoryComponent,
+    PersonalDetailsComponent
     ],
   imports: [
     BrowserModule,
