@@ -1,0 +1,37 @@
+<div *ngIf="leaveBalance; else noData">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Employee Id</th>
+        <th scope="col">Sick Leave</th>
+        <th scope="col">Casual Leave</th>
+        <th scope="col">Earned Leave</th>
+        <th scope="col">Paternity Leave</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{leaveBalance.employeeId}}</td>
+        <td>{{leaveBalance.sickLeave}}</td>
+        <td>{{leaveBalance.casualLeave}}</td>
+        <td>{{leaveBalance.earnedLeave}}</td>
+        <td>{{leaveBalance.paternityLeave}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Buttons -->
+  <div style="text-align: center; margin-top: 30px;">
+    <button class="btn btn-dark" style="margin-right: 10px;" [routerLink]="['/applyLeaves']">
+      Apply Leaves
+    </button>
+    <button class="btn btn-dark" [routerLink]="['/leaveHistory']">
+      History
+    </button>
+  </div>
+</div>
+
+<ng-template #noData>
+  <p *ngIf="errorMessage" style="color:red; margin: 20px;">{{errorMessage}}</p>
+  <p *ngIf="!errorMessage" style="margin: 20px;">Leave balance not available.</p>
+</ng-template>

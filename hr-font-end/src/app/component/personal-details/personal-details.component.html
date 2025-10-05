@@ -1,0 +1,72 @@
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Personal Details</h2>
+  
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="spinner-container text-center mb-3">
+      <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Loading employee details...</p>
+    </div>
+  
+    <!-- Error or No Record -->
+    <div *ngIf="noRecordFound" class="alert alert-warning text-center">
+      No employee record found.
+    </div>
+    <div *ngIf="errorMessage && !loading" class="alert alert-danger text-center">
+      {{ errorMessage }}
+    </div>
+  
+    <!-- Success Message -->
+    <div *ngIf="updateSuccess" class="alert alert-success text-center">
+      Details updated successfully!
+    </div>
+  
+    <!-- Form Section -->
+    <form [formGroup]="personalDetailsForm" *ngIf="!loading && !noRecordFound && user" class="details-form">
+      <table class="table table-borderless">
+        <tr>
+          <td><label for="employeeId" class="form-label">Employee ID</label></td>
+          <td><input type="text" class="form-control" [value]="user.employeeId" disabled /></td>
+        </tr>
+        <tr>
+          <td><label for="firstName" class="form-label">First Name</label></td>
+          <td><input type="text" class="form-control" [value]="user.firstName" disabled /></td>
+        </tr>
+        <tr>
+          <td><label for="lastName" class="form-label">Last Name</label></td>
+          <td><input type="text" class="form-control" [value]="user.lastName" disabled /></td>
+        </tr>
+        <tr>
+          <td><label for="phoneNumber" class="form-label">Phone Number</label></td>
+          <td><input type="text" class="form-control" formControlName="phoneNumber" [readonly]="!editMode"></td>
+          <td>
+            <span *ngIf="personalDetailsForm.controls['phoneNumber'].errors?.['pattern'] && personalDetailsForm.controls['phoneNumber'].touched">
+              <h6 style="color: red;">Phone number must have 10 digits</h6>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="emailId" class="form-label">Email Id</label></td>
+          <td><input type="email" class="form-control" formControlName="emailId" placeholder="abc@cognizant.com" [readonly]="!editMode"></td>
+          <td>
+            <span *ngIf="personalDetailsForm.controls['emailId'].invalid && personalDetailsForm.controls['emailId'].touched">
+              <h6 style="color: red;">Invalid email address</h6>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="grade_id" class="form-label">Grade ID</label></td>
+          <td><input type="number" class="form-control" [value]="user.grade_id" disabled /></td>
+        </tr>
+      </table>
+  
+      <!-- Buttons -->
+      <div class="text-center mt-3">
+        <button type="button" class="btn btn-dark px-4" (click)="toggleEdit()">
+          {{ editMode ? 'Confirm' : 'Update' }}
+        </button>
+      </div>
+    </form>
+  </div>
+  
