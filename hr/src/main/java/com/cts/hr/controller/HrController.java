@@ -51,6 +51,9 @@ public class HrController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private LeaveService leaveService;
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginDetailsDto loginDetails) {
 
@@ -63,25 +66,14 @@ public class HrController {
 
         JwtResponse jwtResponse = new JwtResponse(token, loginDetails.getUsername(), userDetails.getAuthorities().toString());
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
-    @Autowired
-    private LeaveService leaveService;
-
-    /**
-     * Handles the home onboaring page
-     * @return ResponseEntity<String>
-     */
-    @RequestMapping("/")
-    public ResponseEntity<String> welcomeHomePage(){
-        return new ResponseEntity<>("Welcome to the HR Application", HttpStatus.OK);
     }
-
     /**
 	 * Handles Retrieval of employee of given ID
 	 * @return ResponseEntity<UsersDTO>
 	 * 
 	 */
 	@GetMapping("getEmployeeById/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE','TRAVELDESKEXC')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
 	public ResponseEntity<UsersDTO> retrieveEmployeeById(@PathVariable("empId")int empId) throws InvalidInputException{
 		UsersDTO response=hrService.getEmployeeById(empId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
@@ -181,6 +173,7 @@ public class HrController {
      *
      */
     @GetMapping("getLeaves/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
     public ResponseEntity<LeavesDto>  returnLeavesList(@PathVariable("empId") int empId){
 
         LeavesDto leavesDto = leaveService.getLeaveById(empId);
@@ -190,11 +183,26 @@ public class HrController {
     }
 
     /**
+     * Handles Retrieval of all historical Leaves for an Employee
+     * @return ResponseEntity<List<LeaveTrackerDTO>>
+     *
+     */
+    @GetMapping("getLeavesHistory/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<List<LeaveTrackerDTO>> returnHistoricalLeaves(@PathVariable("empId") int empId){
+        List<LeaveTrackerDTO> listOfLeaves = leaveService.getHistoricalLevaesById(empId);
+        ResponseEntity<List<LeaveTrackerDTO>> responseEntity = new ResponseEntity<>(listOfLeaves, HttpStatus.OK);;
+
+        return responseEntity;
+    }
+
+    /**
      * Handles Retrieval of all Leaves for an Employee
      * @return ResponseEntity<List<UsersDTO>>
      *
      */
-    @GetMapping("applyLeaves")
+    @PostMapping("applyLeaves")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
     public ResponseEntity<LeaveRequestResponseDto>  applyLeave(@RequestBody LeaveRequestDto leaveRequestDto){
 
         ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;

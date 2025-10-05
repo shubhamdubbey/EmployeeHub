@@ -16,10 +16,10 @@ public class LeaveTrackerDTO {
     private LeaveType leaveType;
 
     @NotNull
-    private LocalDate from;
+    private LocalDate fromDate;
 
     @NotNull
-    private LocalDate to;
+    private LocalDate toDate;
 
     @NotNull
     private String reason;
@@ -40,20 +40,20 @@ public class LeaveTrackerDTO {
         this.leaveType = leaveType;
     }
 
-    public LocalDate getFrom() {
-        return from;
+    public LocalDate getFromDate() {
+        return fromDate;
     }
 
-    public void setFrom(LocalDate from) {
-        this.from = from;
+    public void setFromDate(LocalDate fromDate) {
+        this.fromDate = fromDate;
     }
 
-    public LocalDate getTo() {
-        return to;
+    public LocalDate getToDate() {
+        return toDate;
     }
 
-    public void setTo(LocalDate to) {
-        this.to = to;
+    public void setToDate(LocalDate toDate) {
+        this.toDate = toDate;
     }
 
     public String getReason() {

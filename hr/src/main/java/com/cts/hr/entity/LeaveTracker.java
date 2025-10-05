@@ -2,13 +2,11 @@ package com.cts.hr.entity;
 
 import com.cts.hr.utility.LeaveType;
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.Collate;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "LeaveTracker")
+@Table(name = "leave_tracker")
 public class LeaveTracker {
 
     @Id
@@ -20,12 +18,13 @@ public class LeaveTracker {
     private int employeeId;
 
     @Column(name = "leave_type")
+    @Enumerated(EnumType.STRING)
     private LeaveType leaveType;
 
-    @Column(name = "from")
+    @Column(name = "from_date")
     private LocalDate  from;
 
-    @Column(name = "to")
+    @Column(name = "to_date")
     private LocalDate  to;
 
     @Column(name = "reason")
