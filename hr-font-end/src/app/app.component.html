@@ -6,9 +6,9 @@
             aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-
         <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR'])"
            class="nav-link active" routerLink="retrieveEmployees" routerLinkActive="active">Retrieve Employees</a>
 
@@ -18,13 +18,30 @@
         <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR'])"
            class="nav-link active" routerLink="addEmployee" routerLinkActive="active">Add Employee</a>
 
+        <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR','ROLE_EMPLOYEE'])"
+           class="nav-link active" routerLink="leaveBalance" routerLinkActive="active">Leave Balance</a>
       </div>
     </div>
-    <div>
-      <ul class="navbar-nav">
-        <li class="navbar-item">
-          <a *ngIf="autheticateUsersService.isUserLoggedIn()" class="nav-link active" 
-             (click)="logout()" routerLinkActive="active">Logout</a>
+
+    <!-- Profile Avatar -->
+    <div class="d-flex align-items-center">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown" *ngIf="autheticateUsersService.isUserLoggedIn()">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            <div class="profile-circle-avatar" [ngStyle]="{'background-color': getAvatarColor()}">
+              {{ getEmployeeIdLastDigits() }}
+            </div>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+            <li>
+              <a class="dropdown-item" routerLink="/personalDetails">Personal Details</a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()">Logout</a>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

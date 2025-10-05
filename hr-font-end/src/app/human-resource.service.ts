@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Users } from '../models/users';
 import { Grades } from '../models/grade';
 import { catchError, throwError } from 'rxjs';
+import { LeaveBalance } from '../models/leavebalance';
+import { ApplyLeaveRequest } from '../models/applyleavesrequest';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,9 @@ export class HumanResourceService {
   private retirieveEmployeeByIdURL = "http://localhost:8090/api/getEmployeeById";
   private updateEmployeesGradeURL = "http://localhost:8090/api/updateEmployeesGrade";
   private retrieveGradesURL = "http://localhost:8090/api/grades";
+  private checkLeaveBalance = "http://localhost:8090/api/getLeaves"
+  private applyLeaves = "http://localhost:8090/api/applyLeaves"
+  private getHistoricalLeave = "http://localhost:8090/api/getLeavesHistory"
 
   constructor(private http: HttpClient) { }
 
@@ -26,6 +31,12 @@ export class HumanResourceService {
       'Content-Type': 'application/json',
       'Authorization': token ? token : ''
     });
+  }
+
+  public getLeaveBalances(id : number){
+    return this.http.get<LeaveBalance>(`${this.checkLeaveBalance}/${id}`, {
+      headers: this.getAuthHeaders()
+    }); 
   }
 
   public getEmployeeById(users: Users) {
@@ -49,6 +60,12 @@ export class HumanResourceService {
     });
   }
 
+  public getLeavesHistory(id : number) {
+    return this.http.get<ApplyLeaveRequest[]>(`${this.getHistoricalLeave}/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   public getGrades() {
     return this.http.get<Grades[]>(this.retrieveGradesURL, {
       headers: this.getAuthHeaders()
@@ -57,6 +74,14 @@ export class HumanResourceService {
 
   public registerEmployee(users: Users) {
     return this.http.post(this.registerEmployeeURL, users, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public applyLeave(applyLeaveRequest: ApplyLeaveRequest) {
+    return this.http.post(this.applyLeaves, applyLeaveRequest, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(this.handleError)
