@@ -1,50 +1,61 @@
 <div style="width: 400px; margin-left: 100px; margin-top: 30px;">
-    <form [formGroup]="idForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-            <label for="empId" class="form-label">Employee Id : </label>
-            <input type="number" class="form-control" id="empId" name="empId" formControlName="id"  placeholder="Ex: 100001">
-            <span *ngIf = "idForm.controls.id.invalid && (idForm.controls.id.touched)">
-              <p style="color: red;">Employee Id's length must be 6</p>
-            </span>
-            
-          </div>
-          <div class = "buttonContainer">
-          <button [disabled] = "idForm.invalid" type="submit" class = "btn btn-dark">Search</button>
-          <button type="reset" class = "btn btn-dark" (click) = "onReset()">Reset</button>
-          </div>
-    </form>
+  <form [formGroup]="idForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="empId" class="form-label">Employee Id : </label>
+      <input type="number" class="form-control" id="empId" name="empId"
+             formControlName="id" placeholder="Ex: 100001">
+      <span *ngIf="idForm.controls.id.invalid && (idForm.controls.id.touched)">
+        <p style="color: red;">Employee Id's length must be 6</p>
+      </span>
+    </div>
+    <div class="buttonContainer">
+      <button [disabled]="idForm.invalid" type="submit" class="btn btn-dark">Search</button>
+      <button type="reset" class="btn btn-dark" (click)="onReset()">Reset</button>
+    </div>
+  </form>
+</div>
+
+<!-- privilege alert -->
+<div *ngIf="alertMessage" class="alert alert-danger mt-3" style="margin-left:100px; width:400px;">
+  {{ alertMessage }}
 </div>
 
 <div>
-    <table class="table" *ngIf="submitted && !noRecordFound && !reset">
-        <thead>
-          <tr>
-            <th scope="col"> Employee Id</th>
-            <th   scope="col"> First Name</th>
-            <th  scope="col"> Last Name</th>
-            <th   scope="col"> Phone Number</th>
-            <th   scope="col"> Email Id</th>
-            <th   scope="col">Role</th>
-            <th   scope="col">Grade Id</th>
-            <th scope = "col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-          
-            <td>{{user.employeeId}}</td>
-            <td>{{user.firstName}}</td>
-            <td>{{user.lastName}}</td>
-            <td>{{user.phoneNumber}}</td>
-            <td>{{user.emailAddress}}</td>
-            <td>{{user.role}}</td>
-            <td>{{user.grade_id}}</td>
-            <td>
-              <button style="width: 100px; margin-bottom: 10px;" [routerLink]="['/updateEmployeeGrade',users.employeeId]" class="btn btn-dark btn-sm">Update</button>
-              <button style="width: 100px;"(click) = "deleteEmployee(users.employeeId)" type = submit class="btn btn-dark btn-sm">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <h5 style = "color:red; margin-left: 100px; margin-top: 30px;" *ngIf="submitted && noRecordFound && !reset">No records found</h5>
+  <table class="table" *ngIf="submitted && !noRecordFound && !reset">
+    <thead>
+      <tr>
+        <th scope="col">Employee Id</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Phone Number</th>
+        <th scope="col">Email Id</th>
+        <th scope="col">Role</th>
+        <th scope="col">Grade Id</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{user.employeeId}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td>{{user.phoneNumber}}</td>
+        <td>{{user.emailAddress}}</td>
+        <td>{{user.role}}</td>
+        <td>{{user.grade_id}}</td>
+        <td>
+          <button style="width: 100px;"
+                  (click)="deleteEmployee(user.employeeId)"
+                  class="btn btn-dark btn-sm">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h5 style="color:red; margin-left: 100px; margin-top: 30px;"
+      *ngIf="submitted && noRecordFound && !reset">
+    No records found
+  </h5>
 </div>

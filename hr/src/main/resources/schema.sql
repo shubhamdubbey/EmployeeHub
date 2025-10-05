@@ -1,22 +1,16 @@
 -- Drop tables if exist (for clean setup)
 DROP TABLE IF EXISTS gradeshistory;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS authenticatedusers;
 DROP TABLE IF EXISTS grades;
+DROP TABLE IF EXISTS login_details;
+DROP TABLE IF EXISTS leave_tracker;
+DROP TABLE IF EXISTS leaves;
 
 -- Create grades table
 CREATE TABLE grades (
                         id INT NOT NULL,
                         name VARCHAR(25),
                         PRIMARY KEY (id)
-);
-
--- Create authenticatedusers table
-CREATE TABLE authenticatedusers (
-                                    user_name VARCHAR(30) NOT NULL,
-                                    password VARCHAR(10) NOT NULL,
-                                    role VARCHAR(20),
-                                    PRIMARY KEY (user_name)
 );
 
 -- Create users table
@@ -35,6 +29,14 @@ CREATE TABLE users (
 )
     );
 
+-- Create LoginDetails table
+CREATE TABLE login_details (
+                                username VARCHAR(50) PRIMARY KEY,
+                                password VARCHAR(255) NOT NULL,
+                                roles VARCHAR(50) NOT NULL
+);
+
+
 -- Create gradeshistory table
 CREATE TABLE gradeshistory (
                                id SERIAL PRIMARY KEY, -- SERIAL replaces auto_increment
@@ -43,4 +45,23 @@ CREATE TABLE gradeshistory (
                                grade_id INT NOT NULL,
                                FOREIGN KEY (employee_id) REFERENCES users(employee_id),
                                FOREIGN KEY (grade_id) REFERENCES grades(id)
+);
+
+-- Create leave_tracker table
+CREATE TABLE leaves (
+    employee_id INT PRIMARY KEY,
+    sick_leave INT NOT NULL,
+    casual_leave INT NOT NULL,
+    earned_leave INT NOT NULL,
+    paternity_leave INT NOT NULL
+);
+
+-- Create leaves table
+CREATE TABLE leave_tracker (
+    id SERIAL PRIMARY KEY,
+    employee_id INT NOT NULL,
+    leave_type VARCHAR(50) NOT NULL,
+    from_date DATE NOT NULL,
+    to_date DATE NOT NULL,
+    reason TEXT
 );

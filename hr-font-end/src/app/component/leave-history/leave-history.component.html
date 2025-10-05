@@ -1,0 +1,34 @@
+<div class="pagination" *ngIf="leaveHistory && leaveHistory.length > 0; else noHistory">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Employee ID</th>
+          <th scope="col">Leave Type</th>
+          <th scope="col">From Date</th>
+          <th scope="col">To Date</th>
+          <th scope="col">Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let leave of leaveHistory | paginate: { itemsPerPage: pageSize, currentPage: currentPage }">
+          <td>{{ leave.employeeId }}</td>
+          <td>{{ leave.leaveType }}</td>
+          <td>{{ leave.fromDate }}</td>
+          <td>{{ leave.toDate }}</td>
+          <td>{{ leave.reason }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <ng-template #noHistory>
+    <h5 style="color: red; margin-left: 100px; margin-top: 30px;">
+      {{ errorMessage || 'No leave history found' }}
+    </h5>
+  </ng-template>
+  
+  <pagination-controls
+    class="custom-pagination"
+    (pageChange)="currentPage = $event">
+  </pagination-controls>
+  

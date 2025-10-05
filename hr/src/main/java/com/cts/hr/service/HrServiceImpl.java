@@ -8,17 +8,14 @@ import java.util.Optional;
 import com.cts.hr.dto.HomeManagerDTO;
 import com.cts.hr.entity.HomeManager;
 import com.cts.hr.repository.HomeManagerRepository;
+import com.cts.hr.entity.*;
+import com.cts.hr.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cts.hr.dto.GradesDTO;
 import com.cts.hr.dto.UsersDTO;
-import com.cts.hr.entity.Grades;
-import com.cts.hr.entity.GradesHistory;
-import com.cts.hr.entity.Users;
-import com.cts.hr.repository.GradesHistoryRepository;
-import com.cts.hr.repository.GradesRepository;
-import com.cts.hr.repository.UsersRepository;
 import com.cts.hr.utility.DuplicateAccountException;
 import com.cts.hr.utility.GradeUpdateRuleViolationException;
 import com.cts.hr.utility.GradesUpdateBusinessLogic;
@@ -45,8 +42,14 @@ public class HrServiceImpl implements HrService{
 	private GradesHistoryRepository gradesHistoryRepository;
 	@Autowired
 	private GradesUpdateBusinessLogic gradesUpdateBusinessLogic;
-	
-	@Override
+    @Autowired
+    private LoginDetailsRepository loginDetailsRepository;
+    @Autowired
+    private LeaveRepository leaveRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
 	public String updateEmployeeGarde(int id, int grade_id) throws GradeUpdateRuleViolationException{
 		Optional<Users> optionalOfUsers=usersRepository.findById(id);
 		if(optionalOfUsers.isEmpty()) return "fail";
@@ -79,14 +82,70 @@ public class HrServiceImpl implements HrService{
 		return "fail";
 			
 	}
-	
+
+    @Transactional
 	public String persistNewEmployees(UsersDTO usersDTO) throws DuplicateAccountException {
+        if (usersDTO.getEmployeeId() == 0 || usersDTO.getFirstName() == null || usersDTO.getEmailAddress() == null) {
+            throw new IllegalArgumentException("Employee ID, First Name, and Email are required.");
+        }
+
+        if (usersRepository.findById(usersDTO.getEmployeeId()).isPresent()) {
+            throw new DuplicateAccountException("Employee with ID: " + usersDTO.getEmployeeId() + " already exists.");
+        }
+
+        if (usersRepository.existsByEmailAddress(usersDTO.getEmailAddress())) {
+            throw new DuplicateAccountException("Email already registered: " + usersDTO.getEmailAddress());
+        }
+
+        // ✅ Create User object
+        Users users = new Users();
+        users.setEmployeeId(usersDTO.getEmployeeId());
+        users.setFirstName(usersDTO.getFirstName());
+        users.setLastName(usersDTO.getLastName());
+        users.setEmailAddress(usersDTO.getEmailAddress());
+        users.setRoles(usersDTO.getRoles());
+        users.setPhoneNumber(usersDTO.getPhoneNumber());
+
+        Optional<Grades> grades = gradesRepository.findById(usersDTO.getGrade_id());
+        if (grades.isEmpty()) {
+            throw new IllegalArgumentException("Invalid grade ID: " + usersDTO.getGrade_id());
+        }
+        users.setGrades(grades.get());
+
+        Users usersCreated = usersRepository.save(users);
+
+        GradesHistory gradesHistory = new GradesHistory();
+        gradesHistory.setAssignedon(LocalDate.now());
+        gradesHistory.setGrades(grades.get());
+        gradesHistory.setUsers(usersCreated);
+        gradesHistoryRepository.save(gradesHistory);
+
+        LoginDetails loginDetails = new LoginDetails();
+        loginDetails.setUsername(String.valueOf(usersCreated.getEmployeeId()));
+        loginDetails.setRoles(usersCreated.getRoles());
+
+        String rawPassword = usersCreated.getFirstName().toLowerCase() + "@" + usersCreated.getEmployeeId();
+        loginDetails.setPassword(passwordEncoder.encode(rawPassword));
+
+        loginDetailsRepository.save(loginDetails);
+
+        Leaves leaves = new Leaves();
+        leaves.setEmployeeId(usersDTO.getEmployeeId());
+        leaves.setPaternityLeave(5);
+        int monthsRemaining = 12 - LocalDate.now().getMonthValue() + 1; // Including current month
+        leaves.setEarnedLeave((int) (monthsRemaining * 1.5));
+        leaves.setCasualLeave((int) (monthsRemaining * 0.5));
+        leaves.setSickLeave(monthsRemaining);
+        leaveRepository.save(leaves);
+
+        return "success";
+    }
         log.info("Inside service class in persisiEmployee() method");
 		Optional<Users> existingUser = usersRepository.findById(usersDTO.getEmployeeId());
 		if(existingUser.isPresent()) {
 			throw new DuplicateAccountException("Employee with ID: " + usersDTO.getEmployeeId() + " is already present.");
 		}
-		
+
 		Users users=new Users();
 		users.setEmployeeId(usersDTO.getEmployeeId());
 		users.setFirstName(usersDTO.getFirstName());
@@ -94,15 +153,15 @@ public class HrServiceImpl implements HrService{
 		users.setEmailAddress(usersDTO.getEmailAddress());
 		users.setRoles(usersDTO.getRoles());
 		users.setPhoneNumber(usersDTO.getPhoneNumber());
-		
+
 		Optional<Grades> grades = gradesRepository.findById(usersDTO.getGrade_id());
 
-		if(grades.isEmpty()) 
+		if(grades.isEmpty())
 		{
             log.info("Fail because grade is not there.");
 			return "fail";
 		}
-		
+
 		users.setGrades(grades.get());
 
         Optional<HomeManager> homeManager = homeManagerRepository.findById(usersDTO.getManagerId());
@@ -112,9 +171,9 @@ public class HrServiceImpl implements HrService{
             homeManagerRepository.save(homeManager.get());
         }
         else return "fail";
-				
+
 		GradesHistory gradesHistory = new GradesHistory();
-		gradesHistory.setAssignedon(LocalDate.now());		
+		gradesHistory.setAssignedon(LocalDate.now());
 		gradesHistory.setGrades(grades.get());
 		gradesHistory.setUsers(users);
 		Users usersCreated=usersRepository.save(users);

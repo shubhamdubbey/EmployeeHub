@@ -31,4 +31,22 @@ export class AppComponent {
     this.router.navigate(['login']);
   }
 
+  getEmployeeIdLastDigits(): string {
+    const empId = sessionStorage.getItem('username');
+    if (empId) {
+      // last two digits
+      return empId.slice(-2);
+    }
+    return '?';
+  }
+  
+  getAvatarColor(): string {
+    const empId = sessionStorage.getItem('username');
+    if (empId) {
+      const hash = empId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const hue = hash % 360;
+      return `hsl(${hue}, 60%, 50%)`;
+    }
+    return '#6c757d'; // fallback gray
+  }
 }

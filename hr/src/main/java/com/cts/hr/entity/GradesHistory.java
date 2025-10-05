@@ -15,8 +15,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "gradeshistory")
-@Getter
-@Setter
 public class GradesHistory {
 	
 	@Id
@@ -33,4 +31,36 @@ public class GradesHistory {
 	@ManyToOne
 	@JoinColumn(name = "grade_id")
 	private Grades grades;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDate getAssignedon() {
+        return assignedon;
+    }
+
+    public void setAssignedon(LocalDate assignedon) {
+        this.assignedon = assignedon;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public Grades getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Grades grades) {
+        this.grades = grades;
+    }
 }

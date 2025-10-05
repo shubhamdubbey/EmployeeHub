@@ -4,11 +4,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.cts.hr.dto.HomeManagerDTO;
+import com.cts.hr.dto.*;
+import com.cts.hr.service.LeaveService;
+import com.cts.hr.dto.LoginDetailsDto;
+import com.cts.hr.jwtSecurity.JwtHelper;
+import com.cts.hr.model.JwtResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cts.hr.dto.GradesDTO;
-import com.cts.hr.dto.UsersDTO;
 import com.cts.hr.service.HrService;
 import com.cts.hr.utility.DuplicateAccountException;
 import com.cts.hr.utility.GradeUpdateRuleViolationException;
@@ -37,29 +43,41 @@ import com.cts.hr.utility.InvalidInputException;
 @Tag(name = "HR Controller", description = "Endpoints for managing employees")
 public class HrController {
 
-//    @Autowired
-//    private Logger logger;
 	@Autowired
 	private HrService hrService;
 
-    /**
-     * Handles the home onboaring page
-     * @return ResponseEntity<String>
-     */
-    @RequestMapping("/")
-    public ResponseEntity<String> welcomeHomePage(){
-        return new ResponseEntity<>("Welcome to the HR Application", HttpStatus.OK);
-    }
+    @Autowired
+    private JwtHelper jwtHelper;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private LeaveService leaveService;
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody LoginDetailsDto loginDetails) {
+
+        jwtHelper.doAuthenticate(loginDetails.getUsername(), loginDetails.getPassword());
+
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginDetails.getUsername());
+        System.out.println(userDetails.getAuthorities());
+        String token = jwtHelper.generateToken(userDetails);
+
+        JwtResponse jwtResponse = new JwtResponse(token, loginDetails.getUsername(), userDetails.getAuthorities().toString());
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+    }
     /**
 	 * Handles Retrieval of employee of given ID
 	 * @return ResponseEntity<UsersDTO>
 	 * 
 	 */
-	@GetMapping("employees/{empId}")
+	@GetMapping("getEmployeeById/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
 	public ResponseEntity<UsersDTO> retrieveEmployeeById(@PathVariable("empId")int empId) throws InvalidInputException{
 		UsersDTO response=hrService.getEmployeeById(empId);
-		return new ResponseEntity<UsersDTO>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
     /**
@@ -107,14 +125,13 @@ public class HrController {
 	 * @return ResponseEntity<String>
 	 * 
 	 */
-	@PostMapping("employees")
+	@PostMapping("addEmployee")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<String> persistEmployee(@RequestBody UsersDTO usersDto) throws DuplicateAccountException, InvalidInputException{
-        log.info("I am inside the controller");
         if(usersDto.getEmployeeId() == 0) {
 			throw new InvalidInputException("Input is invalid");
 		}
 		String result=hrService.persistNewEmployees(usersDto);
-        log.info("Result while persisting data into DB : " + result);
 		if(result.equals("success")) {
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}else {
@@ -127,7 +144,8 @@ public class HrController {
 	 * @return ResponseEntity<UsersDTO>
 	 * 
 	 */
-	@PutMapping("employees/{empId}/{newGrade}")
+	@PutMapping("updateEmployeesGrade/{empId}/{newGrade}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<?> updateEmployeeGrade(@PathVariable("empId")int empId,@PathVariable("newGrade")int newGrade) throws GradeUpdateRuleViolationException{
 		
 			String result=hrService.updateEmployeeGarde(empId, newGrade);
@@ -146,6 +164,7 @@ public class HrController {
 	 * 
 	 */
 	@DeleteMapping("deleteEmployee/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<String> deleteEmployeeById(@PathVariable("empId")int empId){
 		String result=hrService.deleteEmployee(empId);
 		if(result.equals("success")) {
@@ -161,17 +180,11 @@ public class HrController {
 	 * 
 	 */
 	@GetMapping("getEmployees")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<List<UsersDTO>> returnEmployeeList(){
 
 		List<UsersDTO> responseList = hrService.returnEmployeeList();
-		ResponseEntity<List<UsersDTO>> responseEntity = null;
-		if(!responseList.isEmpty()) {
-			responseEntity = new ResponseEntity<List<UsersDTO>>(responseList, HttpStatus.OK);
-		}
-		else {
-			responseEntity=new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		return responseEntity;
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
 	}
 	
 	/** 
@@ -180,6 +193,7 @@ public class HrController {
 	 * 
 	 */
 	@GetMapping("grades")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
 	public ResponseEntity<List<GradesDTO>> returnGradesList(){
         System.out.println("Inside grades controller");
 		List<GradesDTO> responseList = hrService.returnGradesList();
@@ -193,4 +207,47 @@ public class HrController {
 		}
 		return responseEntity;
 	}
+
+    /**
+     * Handles Retrieval of all Leaves for an Employee
+     * @return ResponseEntity<LeavesDto>
+     *
+     */
+    @GetMapping("getLeaves/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<LeavesDto>  returnLeavesList(@PathVariable("empId") int empId){
+
+        LeavesDto leavesDto = leaveService.getLeaveById(empId);
+        ResponseEntity<LeavesDto> responseEntity = new ResponseEntity<>(leavesDto, HttpStatus.OK);;
+
+        return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of all historical Leaves for an Employee
+     * @return ResponseEntity<List<LeaveTrackerDTO>>
+     *
+     */
+    @GetMapping("getLeavesHistory/{empId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<List<LeaveTrackerDTO>> returnHistoricalLeaves(@PathVariable("empId") int empId){
+        List<LeaveTrackerDTO> listOfLeaves = leaveService.getHistoricalLevaesById(empId);
+        ResponseEntity<List<LeaveTrackerDTO>> responseEntity = new ResponseEntity<>(listOfLeaves, HttpStatus.OK);;
+
+        return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of all Leaves for an Employee
+     * @return ResponseEntity<List<UsersDTO>>
+     *
+     */
+    @PostMapping("applyLeaves")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<LeaveRequestResponseDto>  applyLeave(@RequestBody LeaveRequestDto leaveRequestDto){
+
+        ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;
+
+        return responseEntity;
+    }
 }
