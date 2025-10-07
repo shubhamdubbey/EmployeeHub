@@ -1,0 +1,66 @@
+.approvals-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table {
+    font-size: 0.95rem;
+  }
+  
+  .table th {
+    background-color: #212529;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .btn-success,
+  .btn-danger {
+    min-width: 90px;
+  }
+  
+  .custom-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  
+  .alert {
+    width: 70%;
+    margin: 0 auto;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Hover effect */
+  .table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+  
+  /* Smooth fade-in */
+  .approvals-container {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
