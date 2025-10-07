@@ -1,14 +1,15 @@
 package com.cts.hr.controller;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
 
-import com.cts.hr.dto.HomeManagerDTO;
 import com.cts.hr.dto.*;
 import com.cts.hr.service.LeaveService;
 import com.cts.hr.dto.LoginDetailsDto;
 import com.cts.hr.jwtSecurity.JwtHelper;
 import com.cts.hr.model.JwtResponse;
+import com.cts.hr.utility.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.hr.service.HrService;
-import com.cts.hr.utility.DuplicateAccountException;
-import com.cts.hr.utility.GradeUpdateRuleViolationException;
-import com.cts.hr.utility.InvalidInputException;
 
 /**
  * @author Shubham Dubey
@@ -81,43 +79,15 @@ public class HrController {
 	}
 
     /**
-     * Handles Retrieval of all employees that are manager of someone
-     * @return ResponseEntity<List<HomeManagerDTO>>
-     *
-     */
-    @GetMapping("homeManagerList")
-    public ResponseEntity<List<HomeManagerDTO>>  retrieveHomeManagerList(){
-        List<HomeManagerDTO> responseList = hrService.getHomeManagerList();
-        ResponseEntity<List<HomeManagerDTO>> responseEntity = null;
-        if(!responseList.isEmpty()) {
-            responseEntity = new ResponseEntity<List<HomeManagerDTO>>(responseList, HttpStatus.OK);
-        }
-        else {
-            responseEntity=new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return responseEntity;
-    }
-
-    /**
      * Handles Retrieval of employee of given ID
      * @return ResponseEntity<HomeManagerDTO>
      *
      */
-    @GetMapping("manager/{empId}")
-    public ResponseEntity<HomeManagerDTO> retrieveManagerById(@PathVariable("empId")int empId) throws InvalidInputException{
-        HomeManagerDTO response=hrService.getHomeManagerById(empId);
-        return new ResponseEntity<HomeManagerDTO>(response,HttpStatus.OK);
-    }
-
-    /**
-     * Handles Retrieval of employee of given ID
-     * @return ResponseEntity<HomeManagerDTO>
-     *
-     */
-    @PutMapping("updateManager/{empId}/{manId}")
-    public ResponseEntity<String> updateaManager(@PathVariable("empId")int empId, @PathVariable("managerId")int manId) {
+    @PutMapping("updateManager/{empId}/{managerId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    public ResponseEntity<String> updateManager(@PathVariable("empId")int empId, @PathVariable("managerId")int manId) throws InvalidInputException, HomeManagerUpdateRuleViolationException {
         String response = hrService.updateHomeManager(manId, empId);
-        return new ResponseEntity<>(response, response.equals("success") ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, response.equalsIgnoreCase("success") ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 	/** 
@@ -127,7 +97,7 @@ public class HrController {
 	 */
 	@PostMapping("addEmployee")
     @PreAuthorize("hasAnyRole('HR','ADMIN')")
-	public ResponseEntity<String> persistEmployee(@RequestBody UsersDTO usersDto) throws DuplicateAccountException, InvalidInputException{
+	public ResponseEntity<String> persistEmployee(@RequestBody UsersDTO usersDto) throws DuplicateAccountException, InvalidInputException, HomeManagerUpdateRuleViolationException {
         if(usersDto.getEmployeeId() == 0) {
 			throw new InvalidInputException("Input is invalid");
 		}
@@ -249,5 +219,28 @@ public class HrController {
         ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;
 
         return responseEntity;
+    }
+
+    /**
+     * Handles Retrieval of all approval requests for an Employee
+     * @return ResponseEntity<List<ApprovalDto>>
+     *
+     */
+    @GetMapping("listOfApproval/{approverId}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
+    public ResponseEntity<List<ApprovalDto>> listOfApproval(@PathVariable("approverId") int approverId) throws InvalidInputException {
+        List<ApprovalDto> responseList = hrService.listOfApproval(approverId);
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
+
+    @PutMapping("updateApproval/{approvalId}/{status}")
+    @PreAuthorize("hasAnyRole('HR','ADMIN')")
+    public ResponseEntity<Map<String, String>> approveOrRejectRequest(@PathVariable("approvalId") String approvalId, @PathVariable("status") String status) throws InvalidInputException {
+        String response = hrService.approveOrRejectRequest(approvalId, status.equalsIgnoreCase("APPROVED") ? ApprovalStatus.APPROVED : ApprovalStatus.REJECTED);
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", response);
+
+        return new ResponseEntity<>(responseBody,
+                response.equalsIgnoreCase("success") ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

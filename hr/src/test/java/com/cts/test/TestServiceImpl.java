@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.cts.hr.utility.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,11 +37,6 @@ import com.cts.hr.repository.GradesHistoryRepository;
 import com.cts.hr.repository.GradesRepository;
 import com.cts.hr.repository.UsersRepository;
 import com.cts.hr.service.HrServiceImpl;
-import com.cts.hr.utility.DuplicateAccountException;
-import com.cts.hr.utility.GradeUpdateRuleViolationException;
-import com.cts.hr.utility.GradesUpdateBusinessLogic;
-import com.cts.hr.utility.InvalidInputException;
-import com.cts.hr.utility.Roles;
 
 @SpringBootTest(classes = HrApplication.class)
 public class TestServiceImpl {
@@ -921,8 +917,7 @@ public class TestServiceImpl {
 	}
 
 	@Test
-	public void testPersistNewEmployeePositive() throws DuplicateAccountException
-	{
+	public void testPersistNewEmployeePositive() throws DuplicateAccountException, HomeManagerUpdateRuleViolationException {
 		Users users = new Users();
 		users.setEmployeeId(1001);
 		users.setEmailAddress("shubhamd1109");
@@ -963,8 +958,7 @@ public class TestServiceImpl {
 	}
 	
 	@Test
-	public void testPersistNewEmployeeNegative() throws DuplicateAccountException
-	{
+	public void testPersistNewEmployeeNegative() throws DuplicateAccountException, HomeManagerUpdateRuleViolationException {
 		Users users = new Users();
 		users.setEmployeeId(1001);
 		users.setEmailAddress("shubhamd1109");
@@ -1046,15 +1040,14 @@ public class TestServiceImpl {
 			hrServiceImpl.persistNewEmployees(usersDto);
 			assertFalse(true);
 			
-		} catch(DuplicateAccountException e) {
+		} catch(DuplicateAccountException | HomeManagerUpdateRuleViolationException e) {
 			assertTrue(true);
 		}
 		
 	}
 	
 	@Test
-	public void testPersistNewEmployeeIfGradesNotPresent() throws DuplicateAccountException
-	{
+	public void testPersistNewEmployeeIfGradesNotPresent() throws DuplicateAccountException, HomeManagerUpdateRuleViolationException {
 		Users users = new Users();
 		users.setEmployeeId(1001);
 		users.setEmailAddress("shubhamd1109");
