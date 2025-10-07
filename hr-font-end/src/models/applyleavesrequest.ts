@@ -4,5 +4,6 @@ export class ApplyLeaveRequest {
     toDate!: string;
     reason!: string;
     leaveType!: string;
+    status: string;
   }
   

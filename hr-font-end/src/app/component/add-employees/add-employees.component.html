@@ -1,108 +1,156 @@
-<div style="width: 800px; margin-left: 100px; margin-top: 30px;">
-    <h4>Fill the details:</h4>
-    <form [formGroup]="addEmployeeForm" (ngSubmit)="onSubmit()">
-        <table>
-            <tr>
-              <td><label style="margin-right: 30px;"
-                 for="empId" class="form-label">Employee Id</label></td>
-              <td><input class = "form-control" type = "number"  formControlName="employeeId"  placeholder="Ex: 100001" required></td>
-                <td>
-                  <span *ngIf = "addEmployeeForm.controls.employeeId.invalid && addEmployeeForm.controls.employeeId.touched">
-                    <h6 style="color: red;">employee Id's length must be 6</h6>
-                  </span>
-                </td>
-            </tr>
-            <tr>
-                <td><label style="margin-right: 30px;"
-                   for="firstName" class="form-label">First Name</label></td>
-                <td><input class = "form-control" type = "text" formControlName="firstName"></td>
-                <td>
-                  <span *ngIf = "addEmployeeForm.controls.firstName.invalid && (addEmployeeForm.controls.firstName.touched || addEmployeeForm.controls.firstName.dirty)">
-                    <h6 style="color: red;">first name must consist of alphabets of maximum length 10</h6>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><label style="margin-right: 30px;"
-                   for="lastName" class="form-label">Last Name</label></td>
-                <td><input class = "form-control" type = "text"  formControlName="lastName"></td>
-                <td>
-                  <span *ngIf = "addEmployeeForm.controls.lastName.invalid && (addEmployeeForm.controls.lastName.touched || addEmployeeForm.controls.lastName.dirty)">
-                    <h6 style="color: red;">last name must consist of alphabets of maximum length 10</h6>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><label style="margin-right: 30px;"for="phoneNumber"class="form-label">Phone Number</label></td>
-                <td><input class = "form-control" type = "text"  formControlName="phoneNumber"></td>
-                <td>
-                  <span *ngIf = "addEmployeeForm.controls.phoneNumber.errors?.['pattern'] && (addEmployeeForm.controls.phoneNumber.touched && addEmployeeForm.controls.phoneNumber.invalid)">
-                    <h6 style="color: red;">phone number can have 10 digits</h6>
-                  </span>                  
-                </td>
-              </tr>
-              <tr>
-                <td><label style="margin-right: 30px;"
-                   for="emailId" class="form-label">Email Id</label></td>
-                <td><input class = "form-control" type = "text"  formControlName="emailId" placeholder="abs@cognizant.com"></td>
-                <td>
-                  <span *ngIf = "addEmployeeForm.controls.emailId.invalid && (addEmployeeForm.controls.emailId.touched)">
-                    <h6 style="color: red;">invalid email address</h6>
-                  </span>
-                </td>
-              </tr>
-            <tr>
-              <td><label style="margin-right: 30px;" for = "empId" class="form-label">Grades Id</label></td>
-              <td>
-                <select class="form-control"name = "gradeId" formControlName="gradeId">
-                  <option *ngFor="let gradeId of grade" value={{gradeId.identification}}>{{gradeId.identification}}</option>
-              </select>
-              </td>
-              <td>
-                <span *ngIf = "addEmployeeForm.controls.gradeId.invalid && (addEmployeeForm.controls.gradeId.touched)">
-                  <h6 style="color: red;">select grades</h6>
-                </span>
-              </td>
-            </tr>
-            <tr>
-                <td><label style="margin-right: 30px;"
-                    for="role" class="form-label">Role</label></td>
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                <label ><input  type="radio" formControlName="role" value="HR" >Hr</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label ><input type="radio" formControlName="role" value="EMPLOYEES" >Employee</label>                            
-                            </td>
-                        </tr>    
-                        <tr>
-                            <td>
-                                <label><input type="radio" formControlName="role" value="TRAVELDESKEXC">Travel Desk Executive</label>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                  <span *ngIf = "addEmployeeForm.controls.role.invalid && (addEmployeeForm.controls.role.touched)">
-                    <h6 style="color: red;">select role</h6>
-                  </span>
-                </td>
-            </tr>
-            <tr>
-              <td><button type="submit" class = "btn btn-dark" [disabled]="addEmployeeForm.invalid">Submit</button></td>
-              <td><button type="reset" value="Reset" class = "btn btn-dark" (click)="reset()">Reset</button></td>
-            </tr>
-          </table>
-        
-    </form>
-    <div style = "margin-top: 15px;"[hidden]="!submitted">
-      <h6 style="color:red" *ngIf="ifError && check;else elseBlock">{{errorMessage}}</h6>
+<div class="form-container">
+  <div class="form-header">
+    <h2>Add New Employee</h2>
+    <p class="subtitle">Fill in the employee details below</p>
+  </div>
+
+  <form [formGroup]="addEmployeeForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <!-- Employee ID -->
+      <div class="form-group">
+        <label for="employeeId" class="form-label">Employee ID</label>
+        <input 
+          id="employeeId"
+          class="form-input" 
+          type="number" 
+          formControlName="employeeId" 
+          placeholder="100001"
+        />
+        <span class="error-message" *ngIf="addEmployeeForm.controls.employeeId.invalid && addEmployeeForm.controls.employeeId.touched">
+          Employee ID must be 6 digits
+        </span>
+      </div>
+
+      <!-- First Name -->
+      <div class="form-group">
+        <label for="firstName" class="form-label">First Name</label>
+        <input 
+          id="firstName"
+          class="form-input" 
+          type="text" 
+          formControlName="firstName"
+          placeholder="John"
+        />
+        <span class="error-message" *ngIf="addEmployeeForm.controls.firstName.invalid && (addEmployeeForm.controls.firstName.touched || addEmployeeForm.controls.firstName.dirty)">
+          First name must contain alphabets (max 10)
+        </span>
+      </div>
+
+      <!-- Last Name -->
+      <div class="form-group">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input 
+          id="lastName"
+          class="form-input" 
+          type="text" 
+          formControlName="lastName"
+          placeholder="Doe"
+        />
+        <span class="error-message" *ngIf="addEmployeeForm.controls.lastName.invalid && (addEmployeeForm.controls.lastName.touched || addEmployeeForm.controls.lastName.dirty)">
+          Last name must contain alphabets (max 10)
+        </span>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="form-group">
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <input 
+          id="phoneNumber"
+          class="form-input" 
+          type="text" 
+          formControlName="phoneNumber"
+          placeholder="1234567890"
+        />
+        <span class="error-message" *ngIf="addEmployeeForm.controls.phoneNumber.errors?.['pattern'] && (addEmployeeForm.controls.phoneNumber.touched && addEmployeeForm.controls.phoneNumber.invalid)">
+          Phone number must be 10 digits
+        </span>
+      </div>
+
+      <!-- Email ID -->
+      <div class="form-group">
+        <label for="emailId" class="form-label">Email Address</label>
+        <input 
+          id="emailId"
+          class="form-input" 
+          type="email" 
+          formControlName="emailId"
+          placeholder="abc@cognizant.com"
+        />
+        <span class="error-message" *ngIf="addEmployeeForm.controls.emailId.invalid && addEmployeeForm.controls.emailId.touched">
+          Invalid email address
+        </span>
+      </div>
+
+      <!-- Grade ID -->
+      <div class="form-group">
+        <label for="gradeId" class="form-label">Grade</label>
+        <select id="gradeId" class="form-select" formControlName="gradeId">
+          <option value="" disabled selected>Select a grade</option>
+          <option *ngFor="let gradeId of grade" [value]="gradeId.identification">
+            {{ gradeId.identification }}
+          </option>
+        </select>
+        <span class="error-message" *ngIf="addEmployeeForm.controls.gradeId.invalid && addEmployeeForm.controls.gradeId.touched">
+          Please select a grade
+        </span>
+      </div>
+
+      <!-- Manager ID -->
+      <div class="form-group">
+        <label for="homeManagerId" class="form-label">Manager ID</label>
+        <input 
+          id="homeManagerId"
+          class="form-input" 
+          type="number" 
+          formControlName="homeManagerId"
+          placeholder="100002"
+        />
+        <span class="error-message" *ngIf="addEmployeeForm.controls.homeManagerId.invalid && addEmployeeForm.controls.homeManagerId.touched">
+          Manager ID must be 6 digits
+        </span>
+      </div>
+
+      <!-- Role -->
+      <div class="form-group full-width">
+        <label class="form-label">Role</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" formControlName="role" value="HR" />
+            <span class="radio-text">HR</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" formControlName="role" value="EMPLOYEES" />
+            <span class="radio-text">Employee</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" formControlName="role" value="TRAVELDESKEXC" />
+            <span class="radio-text">Travel Desk Executive</span>
+          </label>
+        </div>
+        <span class="error-message" *ngIf="addEmployeeForm.controls.role.invalid && addEmployeeForm.controls.role.touched">
+          Please select a role
+        </span>
+      </div>
     </div>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+      <button type="submit" class="btn btn-primary" [disabled]="addEmployeeForm.invalid">
+        Submit
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="reset()">
+        Reset
+      </button>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div class="message-container" *ngIf="submitted">
+      <div class="alert alert-error" *ngIf="ifError && check">
+        {{ errorMessage }}
+      </div>
+      <div class="alert alert-success" *ngIf="!ifError && check">
+        Employee added successfully!
+      </div>
+    </div>
+  </form>
 </div>
-  <ng-template #elseBlock>
-   <h6 *ngIf="check" style="color: green;">Added Successfully...</h6>
-  </ng-template>

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
-import { DeleteEmployeeComponent } from './component/delete-employee/delete-employee.component';
 import { RetrieveEmployeeByIdComponent } from './component/retrieve-employee-by-id/retrieve-employee-by-id.component';
 import { RetrieveEmployeesComponent } from './component/retrieve-employees/retrieve-employees.component';
 import { UpdateEmployeeGradeComponent } from './component/update-employee-grade/update-employee-grade.component';
@@ -13,6 +12,7 @@ import { LeaveBalanceComponent } from './component/leave-balance/leave-balance.c
 import { ApplyLeavesComponent } from './component/apply-leaves/apply-leaves.component';
 import { LeaveHistoryComponent } from './component/leave-history/leave-history.component';
 import { PersonalDetailsComponent } from './component/personal-details/personal-details.component';
+import { ActionsComponent } from './component/actions/actions.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthenticateGuardService] },
@@ -21,6 +21,7 @@ const routes: Routes = [
 
   { path: 'retrieveEmployeeById', component: RetrieveEmployeeByIdComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'] }},
   { path: 'applyLeaves', component: ApplyLeavesComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'] }},
+  { path: 'actions', component: ActionsComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR'] }},
   { path: 'personalDetails', component: PersonalDetailsComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'] }},
   { path: 'leaveHistory', component: LeaveHistoryComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'] }},
   { path: 'leaveBalance', component: LeaveBalanceComponent, canActivate:[AuthenticateGuardService], data: { roles: ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'] }},

@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cts.hr.utility.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,11 +36,6 @@ import com.cts.hr.controller.HrController;
 import com.cts.hr.dto.GradesDTO;
 import com.cts.hr.dto.UsersDTO;
 import com.cts.hr.service.HrService;
-import com.cts.hr.utility.DuplicateAccountException;
-import com.cts.hr.utility.GradeUpdateRuleViolationException;
-import com.cts.hr.utility.InvalidInputException;
-import com.cts.hr.utility.Roles;
-import com.cts.hr.utility.UnauthorisedException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -252,7 +248,7 @@ public class TestHrController {
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	public void testPersistnewEmployeePositive() throws DuplicateAccountException, InvalidInputException {
+	public void testPersistnewEmployeePositive() throws DuplicateAccountException, InvalidInputException, HomeManagerUpdateRuleViolationException {
 		
 		UsersDTO usersDTO=new UsersDTO();
 		usersDTO.setEmailAddress("shubhamd1109");
@@ -269,7 +265,7 @@ public class TestHrController {
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	public void testPersistnewEmployeeNegative() throws DuplicateAccountException, InvalidInputException {
+	public void testPersistnewEmployeeNegative() throws DuplicateAccountException, InvalidInputException, HomeManagerUpdateRuleViolationException {
 		
 		UsersDTO usersDTO = new UsersDTO();
 		usersDTO.setEmployeeId(100001);
@@ -287,7 +283,7 @@ public class TestHrController {
 			when(hrService.persistNewEmployees(usersDTO)).thenReturn("fail");
 			ResponseEntity<?> responseEntity=hrController.persistEmployee(usersDTO);
 			assertEquals(400,responseEntity.getStatusCodeValue());
-		}catch(InvalidInputException e) {
+		}catch(InvalidInputException | HomeManagerUpdateRuleViolationException e) {
 			assertTrue(true);
 		}
 	}
@@ -331,7 +327,7 @@ public class TestHrController {
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	public void testDeleteEmployeeByIdPositive() throws DuplicateAccountException {
+	public void testDeleteEmployeeByIdPositive() throws DuplicateAccountException, HomeManagerUpdateRuleViolationException {
 		UsersDTO usersDTO=new UsersDTO();
 		usersDTO.setEmailAddress("shubhamd1109");
 		usersDTO.setFirstName("shubham");
@@ -433,7 +429,7 @@ public class TestHrController {
 	}
 	
 	@Test
-	public void testUriPersistNegative() throws JsonProcessingException, DuplicateAccountException {
+	public void testUriPersistNegative() throws JsonProcessingException, DuplicateAccountException, HomeManagerUpdateRuleViolationException {
 		
 		UsersDTO dto = new UsersDTO();
 		dto.setEmailAddress("shubhamd1109");

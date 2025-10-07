@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Users } from '../models/users';
 import { Grades } from '../models/grade';
-import { catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { LeaveBalance } from '../models/leavebalance';
 import { ApplyLeaveRequest } from '../models/applyleavesrequest';
+import { Approval, ApprovalStatus } from '../models/approvals';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,12 @@ export class HumanResourceService {
   private retirieveEmployeeByIdURL = "http://localhost:8090/api/getEmployeeById";
   private updateEmployeesGradeURL = "http://localhost:8090/api/updateEmployeesGrade";
   private retrieveGradesURL = "http://localhost:8090/api/grades";
-  private checkLeaveBalance = "http://localhost:8090/api/getLeaves"
-  private applyLeaves = "http://localhost:8090/api/applyLeaves"
-  private getHistoricalLeave = "http://localhost:8090/api/getLeavesHistory"
+  private checkLeaveBalance = "http://localhost:8090/api/getLeaves";
+  private applyLeaves = "http://localhost:8090/api/applyLeaves";
+  private getHistoricalLeave = "http://localhost:8090/api/getLeavesHistory";
+  private updateManager = "http://localhost:8090/api/updateManager";
+  private listOfApprovalsPending = "http://localhost:8090/api/listOfApproval";
+  private updateApproval = "http://localhost:8090/api/updateApproval";
 
   constructor(private http: HttpClient) { }
 
@@ -66,6 +70,12 @@ export class HumanResourceService {
     });
   }
 
+  public getApprovalsList(id : number) {
+    return this.http.get<Approval[]>(`${this.listOfApprovalsPending}/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   public getGrades() {
     return this.http.get<Grades[]>(this.retrieveGradesURL, {
       headers: this.getAuthHeaders()
@@ -96,6 +106,22 @@ export class HumanResourceService {
       catchError(this.handleError)
     );
   }
+
+  updateApprovalStatus(id: string, status: ApprovalStatus): Observable<any> {
+    return this.http.put<any>(`${this.updateApproval}/${id}/${status}`, null, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  public updateHomeManager(managerId: number, employeeId: number) {
+    return this.http.put(
+      `${this.updateManager}/${employeeId}/${managerId}`, null, 
+      { headers: this.getAuthHeaders() } 
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
 
   private handleError(error: HttpErrorResponse) {
     let message = '';

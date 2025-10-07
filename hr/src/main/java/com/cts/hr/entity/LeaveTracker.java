@@ -1,5 +1,6 @@
 package com.cts.hr.entity;
 
+import com.cts.hr.utility.ApprovalStatus;
 import com.cts.hr.utility.LeaveType;
 import jakarta.persistence.*;
 
@@ -10,9 +11,8 @@ import java.time.LocalDate;
 public class LeaveTracker {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private String id;
 
     @Column(name = "employee_id")
     private int employeeId;
@@ -30,11 +30,15 @@ public class LeaveTracker {
     @Column(name = "reason")
     private String reason;
 
-    public int getId() {
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus status;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -76,5 +80,13 @@ public class LeaveTracker {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public ApprovalStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
     }
 }

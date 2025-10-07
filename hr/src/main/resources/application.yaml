@@ -7,12 +7,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   sql:
     init:
-      mode: always   # ensures schema.sql and data.sql run on startup
+      mode: never   # ensures schema.sql and data.sql run on startup
       continue-on-error: true

@@ -4,11 +4,18 @@ import com.cts.hr.dto.LeaveRequestDto;
 import com.cts.hr.dto.LeaveRequestResponseDto;
 import com.cts.hr.dto.LeaveTrackerDTO;
 import com.cts.hr.dto.LeavesDto;
+import com.cts.hr.entity.Approvals;
 import com.cts.hr.entity.LeaveTracker;
 import com.cts.hr.entity.Leaves;
+import com.cts.hr.entity.Users;
+import com.cts.hr.repository.ApprovalsRepository;
 import com.cts.hr.repository.LeaveRepository;
 import com.cts.hr.repository.LeaveTrackerRepository;
+import com.cts.hr.repository.UsersRepository;
+import com.cts.hr.utility.ApprovalStatus;
+import com.cts.hr.utility.ApprovalType;
 import com.cts.hr.utility.LeaveType;
+import com.cts.hr.utility.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,10 +34,16 @@ import java.util.Optional;
 public class LeaveServiceImpl implements LeaveService {
 
     @Autowired
+    private UsersRepository usersRepository;
+
+    @Autowired
     private LeaveRepository leaveRepository;
 
     @Autowired
     private LeaveTrackerRepository leaveTrackerRepository;
+
+    @Autowired
+    private ApprovalsRepository approvalsRepository;
 
 
     @Override
@@ -103,17 +116,35 @@ public class LeaveServiceImpl implements LeaveService {
 
         // Save leave request history
         LeaveTracker leaveTracker = new LeaveTracker();
+        leaveTracker.setId(Utils.generateCorrelationId());
         leaveTracker.setEmployeeId(leavesRequestDto.getEmployeeId());
         leaveTracker.setLeaveType(type);
         leaveTracker.setFrom(leavesRequestDto.getFromDate());
         leaveTracker.setTo(leavesRequestDto.getToDate());
         leaveTracker.setReason(leavesRequestDto.getReason());
-
-        leaveTrackerRepository.save(leaveTracker);
+        leaveTracker.setStatus(ApprovalStatus.PENDING);
 
         // Successful response
         response.setApplied(true);
         response.setMessage("Leave applied successfully.");
+
+        Optional<Users> optionalUser = usersRepository.findById(leavesRequestDto.getEmployeeId());
+        if(optionalUser.isEmpty()) throw new IllegalArgumentException("No user found with the given employee ID.");
+        else if(optionalUser.get().getHomeManagerId() == 0) return response;
+
+        leaveTrackerRepository.save(leaveTracker);
+
+        Approvals approvals = new Approvals();
+        approvals.setId(leaveTracker.getId());
+        approvals.setApproverId(optionalUser.get().getHomeManagerId());
+        approvals.setEmployeeId(leaveTracker.getEmployeeId());
+        approvals.setStatus(ApprovalStatus.PENDING);
+        approvals.setApprovalType(ApprovalType.LEAVE);
+        String request = "Requesting " + leavesCount + " days of " + type.getValue() + " from " +  leavesRequestDto.getFromDate().toString() + " to " + leavesRequestDto.getToDate().toString() +
+                " for the reason: " + leavesRequestDto.getReason();
+
+        approvals.setRequest(request);
+        approvalsRepository.save(approvals);
 
         return response;
     }
@@ -145,6 +176,7 @@ public class LeaveServiceImpl implements LeaveService {
                     dto.setToDate(lt.getTo());
                     dto.setReason(lt.getReason());
                     dto.setLeaveType(lt.getLeaveType());
+                    dto.setStatus(lt.getStatus());
                     return dto;
                 })
                 .toList();

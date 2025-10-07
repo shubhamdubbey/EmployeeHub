@@ -19,7 +19,7 @@
   
     <!-- Success Message -->
     <div *ngIf="updateSuccess" class="alert alert-success text-center">
-      Details updated successfully!
+      {{ successMessage }}
     </div>
   
     <!-- Form Section -->
@@ -55,6 +55,29 @@
             </span>
           </td>
         </tr>
+  
+        <!-- 🌟 New: Home Manager Editable Row -->
+        <tr>
+          <td><label for="homeManager" class="form-label">Home Manager</label></td>
+          <td>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="managerId"
+              [readonly]="!editManagerMode"
+            />
+          </td>
+          <td class="text-center">
+            <button
+              type="button"
+              class="btn btn-outline-dark btn-sm"
+              (click)="toggleManagerEdit()"
+            >
+              {{ editManagerMode ? 'Update' : 'Change' }}
+            </button>
+          </td>
+        </tr>
+  
         <tr>
           <td><label for="grade_id" class="form-label">Grade ID</label></td>
           <td><input type="number" class="form-control" [value]="user.grade_id" disabled /></td>

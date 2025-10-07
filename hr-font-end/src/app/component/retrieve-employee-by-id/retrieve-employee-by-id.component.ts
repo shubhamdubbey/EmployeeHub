@@ -8,7 +8,7 @@ import { AuthenticateUsersService } from '../../authenticate-users.service';
 @Component({
   selector: 'app-retrieve-employee-by-id',
   templateUrl: './retrieve-employee-by-id.component.html',
-  styleUrls: ['./retrieve-employee-by-id.component.css']   // fixed: styleUrls[]
+  styleUrls: ['./retrieve-employee-by-id.component.css']
 })
 export class RetrieveEmployeeByIdComponent {
   user!: Users;
@@ -17,6 +17,7 @@ export class RetrieveEmployeeByIdComponent {
   noRecordFound = false;
   empId: number;
   reset = false;
+  alertMessage = "";
 
   idForm = new FormGroup({
     id: new FormControl('', [
@@ -26,15 +27,20 @@ export class RetrieveEmployeeByIdComponent {
       Validators.maxLength(6)
     ])
   });
-  alertMessage = "You don't have enough privileges";
 
   constructor(
     private router: Router,
     private humanResourceService: HumanResourceService,
-    public autheticateUsersService: AuthenticateUsersService   // injected for role check in template
+    public autheticateUsersService: AuthenticateUsersService
   ) {}
 
+  /** Only ADMIN or HR can delete employees */
   deleteEmployee(id: number) {
+    if (!this.autheticateUsersService.hasRole(['ROLE_ADMIN', 'ROLE_HR'])) {
+      this.alertMessage = "You don't have enough privileges to delete employees.";
+      return;
+    }
+
     this.humanResourceService.deleteEmployee(id).subscribe({
       next: (data) => {
         console.log("Employee deleted successfully", data);
@@ -48,12 +54,19 @@ export class RetrieveEmployeeByIdComponent {
     });
   }
 
-  async search() {
+  /** Allow search for all roles, but filter result accordingly */
+  search() {
+    if (!this.autheticateUsersService.isUserLoggedIn()) {
+      this.alertMessage = "Please log in to search employees.";
+      return;
+    }
+
     this.humanResourceService.getEmployeeById(this.users).subscribe({
       next: (data) => {
         this.user = data;
         this.submitted = true;
         this.noRecordFound = false;
+        this.alertMessage = "";
       },
       error: () => {
         this.noRecordFound = true;
@@ -70,11 +83,17 @@ export class RetrieveEmployeeByIdComponent {
     this.submitted = false;
     this.noRecordFound = false;
     this.user = null!;
+    this.alertMessage = "";
   }
 
   onSubmit() {
     this.reset = false;
     this.users.employeeId = +this.idForm.controls['id'].value;
     this.search();
+  }
+
+  /** Utility to check role from template */
+  hasPrivilege(roles: string[]): boolean {
+    return this.autheticateUsersService.hasRole(roles);
   }
 }

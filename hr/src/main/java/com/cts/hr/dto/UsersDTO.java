@@ -16,13 +16,22 @@ public class UsersDTO {
 	private String emailAddress;
 	private Roles role;
 	private int grade_id;
+    private int managerId;
 	
 	public void setRoles(Roles role) {
 		// TODO Auto-generated method stub
 		this.role = role;
 	}
-	
-	public Roles getRoles()
+
+    public int getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(int managerId) {
+        this.managerId = managerId;
+    }
+
+    public Roles getRoles()
 	{
 		return this.role;
 	}

@@ -1,23 +1,56 @@
+/* Avatar circle */
 .profile-circle-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 16px;
-    transition: all 0.2s ease-in-out;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.profile-circle-avatar:hover {
-    transform: scale(1.1);
-}
-
-/* Dropdown styling */
+/* Dropdowns look cleaner */
 .dropdown-menu {
-    min-width: 180px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* Notification bell animation */
+.bi-bell {
+  transition: transform 0.2s ease;
+}
+
+.bi-bell:hover {
+  transform: rotate(-15deg);
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.7rem;
+  padding: 0.35em 0.45em;
+}
+
+/* Approvals list */
+.dropdown-item {
+  white-space: normal;
+  border-radius: 0.5rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-divider {
+  margin: 0.4rem 0;
+}
+
+/* Responsive tweak */
+@media (max-width: 992px) {
+  .profile-circle-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
 }

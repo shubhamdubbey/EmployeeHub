@@ -9,6 +9,7 @@
         <th   scope="col"> Email Id</th>
         <th   scope="col">Role</th>
         <th   scope="col">Grade Id</th>
+        <th scope = "col">Home Manager</th>
         <th scope = "col">Actions</th>
       </tr>
     </thead>
@@ -22,6 +23,7 @@
         <td>{{users.emailAddress}}</td>
         <td>{{users.role}}</td>
         <td>{{users.grade_id}}</td>
+        <td>{{users.managerId}}</td>
         <td>
           <button style="width: 100px; margin-bottom: 10px;" [routerLink]="['/updateEmployeeGrade',users.employeeId]" class="btn btn-dark btn-sm">Update</button>
         </td>

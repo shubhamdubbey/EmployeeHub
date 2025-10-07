@@ -20,6 +20,9 @@
 
         <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR','ROLE_EMPLOYEE'])"
            class="nav-link active" routerLink="leaveBalance" routerLinkActive="active">Leave Balance</a>
+
+        <a *ngIf="autheticateUsersService.isUserLoggedIn() && autheticateUsersService.hasRole(['ROLE_ADMIN','ROLE_HR'])"
+           class="nav-link active" routerLink="actions" routerLinkActive="active">Actions</a>
       </div>
     </div>
 
