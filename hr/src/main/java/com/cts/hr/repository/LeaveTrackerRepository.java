@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface LeaveTrackerRepository extends CrudRepository<LeaveTracker, Integer> {
+public interface LeaveTrackerRepository extends CrudRepository<LeaveTracker, String> {
     List<LeaveTracker> findByEmployeeId(int employeeId);
 }

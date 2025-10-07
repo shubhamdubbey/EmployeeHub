@@ -40,17 +40,8 @@ public class Users {
 	@JoinColumn(name = "current_grade_id")
 	private Grades grades;
 
-    @ManyToOne(targetEntity = HomeManager.class)
-    @JoinColumn(name = "employee_id")
-    private HomeManager homeManager;
-
-	public void setRoles(Roles roles) {
-		this.role = roles;
-	}
-	
-	public Roles getRoles() {
-		return this.role;
-	}
+    @Column(name = "home_manager_id")
+    private int homeManagerId;
 
     public int getEmployeeId() {
         return EmployeeId;
@@ -100,11 +91,11 @@ public class Users {
         this.emailAddress = emailAddress;
     }
 
-    public Roles getRole() {
+    public Roles getRoles() {
         return role;
     }
 
-    public void setRole(Roles role) {
+    public void setRoles(Roles role) {
         this.role = role;
     }
 
@@ -114,5 +105,21 @@ public class Users {
 
     public void setGrades(Grades grades) {
         this.grades = grades;
+    }
+
+    public int getHomeManagerId() {
+        return homeManagerId;
+    }
+
+    public void setHomeManagerId(int homeManagerId) {
+        this.homeManagerId = homeManagerId;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
     }
 }

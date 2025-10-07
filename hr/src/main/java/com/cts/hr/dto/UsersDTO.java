@@ -22,8 +22,16 @@ public class UsersDTO {
 		// TODO Auto-generated method stub
 		this.role = role;
 	}
-	
-	public Roles getRoles()
+
+    public int getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(int managerId) {
+        this.managerId = managerId;
+    }
+
+    public Roles getRoles()
 	{
 		return this.role;
 	}

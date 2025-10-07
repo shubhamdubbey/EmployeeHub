@@ -1,5 +1,6 @@
 package com.cts.hr.dto;
 
+import com.cts.hr.utility.ApprovalStatus;
 import com.cts.hr.utility.LeaveType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -23,6 +24,9 @@ public class LeaveTrackerDTO {
 
     @NotNull
     private String reason;
+
+    @NotNull
+    private ApprovalStatus status;
 
     public int getEmployeeId() {
         return employeeId;
@@ -62,5 +66,13 @@ public class LeaveTrackerDTO {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public ApprovalStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
     }
 }
