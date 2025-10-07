@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS grades;
 DROP TABLE IF EXISTS login_details;
 DROP TABLE IF EXISTS leave_tracker;
 DROP TABLE IF EXISTS leaves;
+DROP TABLE IF EXISTS approvals;
 
 -- Create grades table
 CREATE TABLE grades (
@@ -58,10 +59,21 @@ CREATE TABLE leaves (
 
 -- Create leaves table
 CREATE TABLE leave_tracker (
-    id SERIAL PRIMARY KEY,
+    id VARCHAR(255) PRIMARY KEY,
     employee_id INT NOT NULL,
-    leave_type VARCHAR(50) NOT NULL,
-    from_date DATE NOT NULL,
-    to_date DATE NOT NULL,
-    reason TEXT
+    leave_type VARCHAR(255),
+    from_date DATE,
+    to_date DATE,
+    reason VARCHAR(255),
+    status VARCHAR(255)
+);
+
+-- Create approvals table
+CREATE TABLE approvals (
+    approval_id VARCHAR(255) PRIMARY KEY,
+    employee_id INT NOT NULL,
+    request VARCHAR(255),
+    status VARCHAR(50),          -- ENUM stored as STRING
+    approval_type VARCHAR(50),   -- ENUM stored as STRING
+    approver_id INT
 );
