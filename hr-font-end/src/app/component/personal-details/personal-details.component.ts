@@ -9,15 +9,15 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./personal-details.component.css']
 })
 export class PersonalDetailsComponent implements OnInit {
-
   user: Users = new Users();
-  loading: boolean = false;
-  editMode: boolean = false;
-  updateSuccess: boolean = false;
-  errorMessage: string = '';
-  submitted: boolean = false;
-  noRecordFound: boolean = false;
-
+  loading = false;
+  editMode = false;
+  editManagerMode = false; // 🌟 NEW
+  updateSuccess = false;
+  successMessage = ''; // 🌟 UPDATED
+  errorMessage = '';
+  submitted = false;
+  noRecordFound = false;
   personalDetailsForm!: FormGroup;
 
   constructor(private humanResourceService: HumanResourceService) {}
@@ -31,7 +31,8 @@ export class PersonalDetailsComponent implements OnInit {
       emailId: new FormControl({ value: '', disabled: true }, [
         Validators.required,
         Validators.email
-      ])
+      ]),
+      managerId: new FormControl({ value: '', disabled: true }) // 🌟 NEW FIELD
     });
 
     this.getEmployeeDetails();
@@ -43,24 +44,23 @@ export class PersonalDetailsComponent implements OnInit {
       this.errorMessage = 'Employee ID not found!';
       return;
     }
-
     const empId = Number(empIdStr);
     if (isNaN(empId)) {
       this.errorMessage = 'Employee ID is invalid!';
       return;
     }
 
-    // Create a Users object with just employeeId
     const userReq = new Users();
     userReq.employeeId = empId;
-
     this.loading = true;
+
     this.humanResourceService.getEmployeeById(userReq).subscribe({
       next: (data) => {
         this.user = data;
         this.personalDetailsForm.patchValue({
           phoneNumber: this.user.phoneNumber,
-          emailId: this.user.emailAddress
+          emailId: this.user.emailAddress,
+          managerId: this.user.managerId
         });
         this.submitted = true;
         this.noRecordFound = false;
@@ -93,16 +93,17 @@ export class PersonalDetailsComponent implements OnInit {
 
     this.user.phoneNumber = this.personalDetailsForm.value['phoneNumber'];
     this.user.emailAddress = this.personalDetailsForm.value['emailId'];
-
     this.loading = true;
+
     this.humanResourceService.updateEmployee(this.user, this.user.grade_id).subscribe({
       next: () => {
         this.loading = false;
         this.editMode = false;
         this.updateSuccess = true;
+        this.successMessage = 'Details updated successfully!';
         this.personalDetailsForm.get('phoneNumber')?.disable();
         this.personalDetailsForm.get('emailId')?.disable();
-        setTimeout(() => this.updateSuccess = false, 3000);
+        setTimeout(() => (this.updateSuccess = false), 3000);
       },
       error: (err) => {
         this.loading = false;
@@ -110,5 +111,43 @@ export class PersonalDetailsComponent implements OnInit {
         console.error('Error updating employee:', err);
       }
     });
+  }
+
+  // 🌟 NEW: Toggle and Update Manager
+  toggleManagerEdit(): void {
+    if (this.editManagerMode) {
+      this.updateManager();
+    } else {
+      this.editManagerMode = true;
+      this.personalDetailsForm.get('managerId')?.enable();
+    }
+  }
+
+  updateManager(): void {
+    const newManagerId = this.personalDetailsForm.value['managerId'];
+    if (!newManagerId || isNaN(newManagerId)) {
+      this.errorMessage = 'Please enter a valid Manager ID.';
+      return;
+    }
+
+    this.loading = true;
+    this.humanResourceService
+      .updateHomeManager(newManagerId, this.user.employeeId)
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
+          this.editManagerMode = false;
+          this.personalDetailsForm.get('managerId')?.disable();
+          this.user.managerId = newManagerId;
+          this.updateSuccess = true;
+          this.successMessage = 'Request has been raised. Once it is approved, the home manager will be updated!';
+          setTimeout(() => (this.updateSuccess = false), 3000);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = 'Failed to update Home Manager. Please try again.';
+          console.error('Error updating home manager:', err);
+        }
+      });
   }
 }

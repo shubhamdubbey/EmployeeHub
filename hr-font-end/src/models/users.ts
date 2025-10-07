@@ -6,4 +6,5 @@ export class Users{
     emailAddress !: string;
     role !: string;
     grade_id !: number;
+    managerId !: number;
 }

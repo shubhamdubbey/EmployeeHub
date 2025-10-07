@@ -44,7 +44,8 @@ export class ApplyLeavesComponent {
         leaveType: this.leaveForm.value.leaveType as string,
         fromDate: this.leaveForm.value.fromDate as string,
         toDate: this.leaveForm.value.toDate as string,
-        reason: this.leaveForm.value.reason as string
+        reason: this.leaveForm.value.reason as string,
+        status: ""
       };
 
       this.humanResourceService.applyLeave(leaveRequest).subscribe({

@@ -17,6 +17,7 @@ import { LeaveBalanceComponent } from './component/leave-balance/leave-balance.c
 import { ApplyLeavesComponent } from './component/apply-leaves/apply-leaves.component';
 import { LeaveHistoryComponent } from './component/leave-history/leave-history.component';
 import { PersonalDetailsComponent } from './component/personal-details/personal-details.component';
+import { ActionsComponent } from './component/actions/actions.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { PersonalDetailsComponent } from './component/personal-details/personal-
     LeaveBalanceComponent,
     ApplyLeavesComponent,
     LeaveHistoryComponent,
-    PersonalDetailsComponent
+    PersonalDetailsComponent,
+    ActionsComponent
     ],
   imports: [
     BrowserModule,
