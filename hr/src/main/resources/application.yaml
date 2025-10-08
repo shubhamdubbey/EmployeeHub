@@ -16,3 +16,8 @@ spring:
     init:
       mode: never   # ensures schema.sql and data.sql run on startup
       continue-on-error: true
+
+  redis:
+    host: ${SPRING_REDIS_HOST}
+    port: ${SPRING_REDIS_PORT}
+    caches: employees,grades
