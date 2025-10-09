@@ -2,6 +2,7 @@ package com.cts.hr.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,7 +13,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "grades")
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Grades {
 
 	@Id
