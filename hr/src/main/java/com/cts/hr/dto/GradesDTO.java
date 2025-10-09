@@ -3,7 +3,9 @@ package com.cts.hr.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-public class GradesDTO {
+import java.io.Serializable;
+
+public class GradesDTO implements Serializable {
 
 	
 	private int identification;
@@ -22,6 +24,14 @@ public class GradesDTO {
     }
 
     public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public GradesDTO() {
+    }
+
+    public GradesDTO(int identification, String fullName) {
+        this.identification = identification;
         this.fullName = fullName;
     }
 }

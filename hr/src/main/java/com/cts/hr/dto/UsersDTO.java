@@ -6,7 +6,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-public class UsersDTO {
+import java.io.Serializable;
+
+public class UsersDTO implements Serializable {
 
 	private int employeeId;
 	private String firstName;
@@ -90,5 +92,19 @@ public class UsersDTO {
 
     public void setGrade_id(int grade_id) {
         this.grade_id = grade_id;
+    }
+
+    public UsersDTO(int employeeId, String firstName, String lastName, String phoneNumber, String emailAddress, Roles role, int grade_id, int managerId) {
+        this.employeeId = employeeId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.emailAddress = emailAddress;
+        this.role = role;
+        this.grade_id = grade_id;
+        this.managerId = managerId;
+    }
+
+    public UsersDTO() {
     }
 }

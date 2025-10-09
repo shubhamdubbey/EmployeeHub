@@ -3,6 +3,7 @@ package com.cts.hr.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.cts.hr.dto.ApprovalDto;
@@ -10,6 +11,10 @@ import com.cts.hr.entity.*;
 import com.cts.hr.repository.*;
 import com.cts.hr.utility.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +50,11 @@ public class HrServiceImpl implements HrService {
     private ApprovalsRepository approvalRepository;
     @Autowired
     private LeaveTrackerRepository leaveTrackerRepository;
+    @Autowired
+    private CacheManager cacheManager;
 
     @Override
+    @CacheEvict(value = "employees", key = "'all'", allEntries = true)
     public String updateEmployeeGarde(int id, int grade_id) throws GradeUpdateRuleViolationException {
         Optional<Users> optionalOfUsers = usersRepository.findById(id);
         if (optionalOfUsers.isEmpty()) return "fail";
@@ -76,6 +84,7 @@ public class HrServiceImpl implements HrService {
     }
 
     @Transactional
+    @CacheEvict(value = "employees", key = "'all'", allEntries = true)
     public String persistNewEmployees(UsersDTO usersDTO) throws DuplicateAccountException, HomeManagerUpdateRuleViolationException {
         if (usersDTO.getEmployeeId() == 0 || usersDTO.getFirstName() == null || usersDTO.getEmailAddress() == null) {
             throw new IllegalArgumentException("Employee ID, First Name, and Email are required.");
@@ -150,7 +159,9 @@ public class HrServiceImpl implements HrService {
 
 
     @Override
+    @Cacheable(value = "employees", key = "'all'")
     public List<UsersDTO> returnEmployeeList() {
+        System.out.println("Am inside the employees method of HrServiceImpl");
 
         Iterable<Users> usersList = usersRepository.findAll();
         List<UsersDTO> usersDTOList = new ArrayList<UsersDTO>();
@@ -175,6 +186,7 @@ public class HrServiceImpl implements HrService {
     }
 
     @Override
+    @Cacheable(value = "employees", key = "#id")
     public UsersDTO getEmployeeById(int id) throws InvalidInputException {
         Optional<Users> optionalOfUsers = usersRepository.findById(id);
         if (!optionalOfUsers.isPresent()) throw new InvalidInputException("No records found");
@@ -198,6 +210,7 @@ public class HrServiceImpl implements HrService {
     }
 
     @Override
+    @CacheEvict(value = "employees", key = "'all'", allEntries = true)
     public String deleteEmployee(int id) {
 
         Optional<Users> users = usersRepository.findById(id);
@@ -216,8 +229,9 @@ public class HrServiceImpl implements HrService {
     }
 
     @Override
+    @Cacheable(value = "grades", key = "'all'")
     public List<GradesDTO> returnGradesList() {
-
+        System.out.println("Am inside the grades method of HrServiceImpl");
         Iterable<Grades> gradesList = gradesRepository.findAll();
         List<GradesDTO> gradesDTOList = new ArrayList<GradesDTO>();
         for (Grades grades : gradesList) {
@@ -303,6 +317,8 @@ public class HrServiceImpl implements HrService {
                     usersRepository.save(employee.get());
                     approval.setStatus(ApprovalStatus.APPROVED);
                     approvalRepository.save(approval);
+                    Cache employeesCache = cacheManager.getCache("employees");
+                    if (employeesCache != null) employeesCache.evict("all");
                 }else throw new IllegalArgumentException("Employee with given is not present.");
             } else if(status == ApprovalStatus.REJECTED){
                 approval.setStatus(ApprovalStatus.REJECTED);

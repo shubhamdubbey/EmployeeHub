@@ -1,6 +1,7 @@
 package com.cts.hr.entity;
 
 import com.cts.hr.utility.Roles;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Users {
 	
 	@Id
