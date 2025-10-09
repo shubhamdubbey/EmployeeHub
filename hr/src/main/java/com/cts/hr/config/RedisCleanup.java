@@ -15,7 +15,7 @@ public class RedisCleanup {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Value("{spring.app.caches}")
+    @Value("${spring.redis.caches}")
     private String prefix;
 
     @PreDestroy

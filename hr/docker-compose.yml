@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   # PostgreSQL database service
   postgres_db:
@@ -14,15 +15,26 @@ services:
       - "5432:5432"
     volumes:
       - human-resource-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U human-resource -d human-resource"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Redis service
   redis:
     image: redis:7
     container_name: redis
+#    command: ["redis-server", "--bind", "0.0.0.0"]
     ports:
       - "6379:6379"
     networks:
       - human-resource-network
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   # Spring Boot application service
   human_resource_app:
@@ -30,21 +42,26 @@ services:
       context: .
       dockerfile: Dockerfile
     image: human_resource-app:v1
+    container_name: human_resource_app
     ports:
       - "8090:8090"
     environment:
-      # Database connection environment variables
+      # Database connection
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/human-resource
       SPRING_DATASOURCE_USERNAME: human-resource
       SPRING_DATASOURCE_PASSWORD: human-resource
-      # Redis connection environment variables
+
+      # Redis connection
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
-      # Set the application's port to 8090 within the container
+
+      # Application port
       SERVER_PORT: 8090
-      # Optional: Add JPA/Hibernate configuration
+
+      # JPA/Hibernate
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+
     depends_on:
       - postgres_db
       - redis
