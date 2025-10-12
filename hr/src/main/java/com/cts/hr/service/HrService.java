@@ -1,15 +1,15 @@
 package com.cts.hr.service;
 
 import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.cts.hr.dto.ApprovalDto;
 import com.cts.hr.dto.GradesDTO;
 import com.cts.hr.dto.UsersDTO;
 import com.cts.hr.utility.*;
-
 public interface HrService {
 	
-	List<UsersDTO> returnEmployeeList();
+	Page<UsersDTO> returnEmployeeList(Pageable pageable);
 	String persistNewEmployees(UsersDTO usersDTO) throws DuplicateAccountException, HomeManagerUpdateRuleViolationException;
 	String deleteEmployee(int id);
 	String updateEmployeeGarde(int id ,int grade_id) throws GradeUpdateRuleViolationException;

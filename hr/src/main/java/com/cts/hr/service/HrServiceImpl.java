@@ -1,9 +1,10 @@
 package com.cts.hr.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.cts.hr.dto.ApprovalDto;
@@ -159,9 +160,9 @@ public class HrServiceImpl implements HrService {
 
 
     @Override
-    @Cacheable(value = "employees", key = "'all'")
-    public List<UsersDTO> returnEmployeeList() {
-        System.out.println("Am inside the employees method of HrServiceImpl");
+    @Cacheable(value = "employees", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
+    public Page<UsersDTO> returnEmployeeList(Pageable pageable) {
+        /** System.out.println("Am inside the employees method of HrServiceImpl");
 
         Iterable<Users> usersList = usersRepository.findAll();
         List<UsersDTO> usersDTOList = new ArrayList<UsersDTO>();
@@ -182,7 +183,20 @@ public class HrServiceImpl implements HrService {
             usersDTOList.add(usersDTO);
         }
         return usersDTOList;
-
+        **/
+        Page<Users> usersPage = usersRepository.findAll(pageable);
+        return usersPage.map(users -> {
+            UsersDTO usersDTO = new UsersDTO();
+            usersDTO.setEmployeeId(users.getEmployeeId());
+            usersDTO.setFirstName(users.getFirstName());
+            usersDTO.setLastName(users.getLastName());
+            usersDTO.setEmailAddress(users.getEmailAddress());
+            usersDTO.setGrade_id(users.getGrades().getIdentification());
+            usersDTO.setRoles(users.getRoles());
+            usersDTO.setPhoneNumber(users.getPhoneNumber());
+            usersDTO.setManagerId(users.getHomeManagerId());
+            return usersDTO;
+        });
     }
 
     @Override
