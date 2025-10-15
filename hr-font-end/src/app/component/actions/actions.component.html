@@ -1,86 +1,90 @@
-<div class="approvals-container">
-    <h2 class="text-center mb-4">Manage Approvals</h2>
-  
-    <!-- Loader -->
-    <div *ngIf="isLoading" class="text-center my-4">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  
-    <!-- Error message -->
-    <div *ngIf="!isLoading && errorMessage" class="alert alert-danger text-center">
-      {{ errorMessage }}
-    </div>
-  
-    <!-- Approvals Table -->
-    <div *ngIf="!isLoading && approvals.length > 0" class="pagination">
-      <table class="table table-striped table-hover table-bordered align-middle">
-        <thead class="table-dark text-center">
-          <tr>
-            <th scope="col">Approval ID</th>
-            <th scope="col">Employee ID</th>
-            <th scope="col">Request</th>
-            <th scope="col">Approval Type</th>
-            <th scope="col">Status</th>
-            <th scope="col">Approver ID</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-  
-        <tbody>
-          <tr
-            *ngFor="
-              let approval of approvals
-                | paginate: { itemsPerPage: pageSize, currentPage: currentPage }
-            "
-          >
-            <td>{{ approval.id }}</td>
-            <td>{{ approval.employeeId }}</td>
-            <td>{{ approval.request }}</td>
-            <td>{{ approval.approvalType }}</td>
-            <td>
-              <span
-                class="badge"
-                [ngClass]="{
-                  'bg-warning text-dark': approval.status === 'PENDING',
-                  'bg-success': approval.status === 'APPROVED',
-                  'bg-danger': approval.status === 'REJECTED'
-                }"
-              >
-                {{ approval.status }}
-              </span>
-            </td>
-            <td>{{ approval.approverId }}</td>
-            <td class="text-center">
-              <button
-                class="btn btn-sm btn-success me-2"
-                (click)="approveRequest(approval)"
-                [disabled]="approval.status !== 'PENDING'"
-              >
-                Approve
-              </button>
-              <button
-                class="btn btn-sm btn-danger"
-                (click)="rejectRequest(approval)"
-                [disabled]="approval.status !== 'PENDING'"
-              >
-                Reject
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-  
-      <pagination-controls
-        class="custom-pagination"
-        (pageChange)="currentPage = $event"
-      ></pagination-controls>
-    </div>
-  
-    <!-- Empty State -->
-    <div *ngIf="!isLoading && approvals.length === 0 && !errorMessage" class="text-center text-muted mt-4">
-      No approvals found.
-    </div>
+<div class="pagination">
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading approvals...</p>
   </div>
-  
+
+  <h2 class="text-center page-title">Manage Approvals</h2>
+
+  <!-- Error message -->
+  <div *ngIf="!isLoading && errorMessage" class="alert alert-danger text-center">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Approvals Table -->
+  <table class="table" *ngIf="!isLoading && approvals.length > 0">
+    <thead>
+      <tr>
+        <th>Approval ID</th>
+        <th>Employee ID</th>
+        <th>Request</th>
+        <th>Approval Type</th>
+        <th>Status</th>
+        <th>Approver ID</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+        *ngFor="
+          let approval of approvals
+            | paginate: { itemsPerPage: pageSize, currentPage: currentPage }
+        "
+        [class.loading-row]="isLoading"
+      >
+        <td>{{ approval.id }}</td>
+        <td>{{ approval.employeeId }}</td>
+        <td>{{ approval.request }}</td>
+        <td>{{ approval.approvalType }}</td>
+        <td>
+          <span
+            class="status-badge"
+            [ngClass]="{
+              'pending': approval.status === 'PENDING',
+              'approved': approval.status === 'APPROVED',
+              'rejected': approval.status === 'REJECTED'
+            }"
+          >
+            {{ approval.status }}
+          </span>
+        </td>
+        <td>{{ approval.approverId }}</td>
+        <td>
+          <button
+            class="btn btn-dark btn-sm me-2"
+            (click)="approveRequest(approval)"
+            [disabled]="approval.status !== 'PENDING' || isLoading"
+          >
+            Approve
+          </button>
+          <button
+            class="btn btn-outline-dark btn-sm"
+            (click)="rejectRequest(approval)"
+            [disabled]="approval.status !== 'PENDING' || isLoading"
+          >
+            Reject
+          </button>
+        </td>
+      </tr>
+
+      <!-- Empty state when no approvals -->
+      <tr *ngIf="approvals.length === 0 && !isLoading && !errorMessage">
+        <td colspan="7" class="empty-state">No approvals found</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls -->
+  <div *ngIf="approvals.length > 0" class="page-buttons-wrapper">
+    <div class="pagination-info">
+      <span>Showing page {{ currentPage }}</span>
+    </div>
+
+    <pagination-controls
+      class="custom-pagination"
+      (pageChange)="currentPage = $event"
+    ></pagination-controls>
+  </div>
+</div>

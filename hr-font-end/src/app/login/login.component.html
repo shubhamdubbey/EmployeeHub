@@ -1,32 +1,71 @@
-<div style="width: 500px; padding-top: 130px;" class="container">
-  <form [formGroup]="loginForm" (ngSubmit)="checkLogin()">
-    
-    <!-- Username -->
+<div class="container login-container">
+
+  <!-- Login Form -->
+  <form *ngIf="!isFirstLogin && !showChangePassword" [formGroup]="loginForm" (ngSubmit)="checkLogin()" class="login-form">
+    <h2 class="form-title">Sign In</h2>
+
     <div class="mb-3">
       <label for="username" class="form-label">Username</label>
       <input type="text" id="username" class="form-control" formControlName="username" required>
-      <span *ngIf="username?.invalid && username?.touched">
-        <p style="color: red;">Invalid username</p>
+      <span *ngIf="username?.invalid && username?.touched" class="error-text">
+        Invalid username
       </span>
     </div>
 
-    <!-- Password -->
     <div class="mb-3">
       <label for="password" class="form-label">Password</label>
       <input type="password" id="password" class="form-control" formControlName="password" required>
-      <span *ngIf="password?.invalid && password?.touched">
-        <p style="color: red;">Invalid password</p>
+      <span *ngIf="password?.invalid && password?.touched" class="error-text">
+        Invalid password
       </span>
     </div>
 
-    <!-- Submit button -->
-    <button type="submit" class="btn btn-dark" [disabled]="loginForm.invalid">
+    <button type="submit" class="btn btn-dark btn-lg w-100" [disabled]="loginForm.invalid">
       Sign in
     </button>
+
+    <h6 *ngIf="invalidCredentials" class="error-text mt-3">
+      Username / password is wrong
+    </h6>
   </form>
 
-  <!-- Error message -->
-  <h6 *ngIf="invalidCredentials" class="mb-3" style="color: red;">
-    Username / password is wrong
-  </h6>
+  <!-- Change Password Form -->
+  <form *ngIf="showChangePassword" [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()" class="login-form">
+    <h2 class="form-title">Change Your Password</h2>
+
+    <div class="mb-3">
+      <label for="currentPassword" class="form-label">Current Password</label>
+      <input type="password" id="currentPassword" class="form-control" formControlName="currentPassword" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="newPassword" class="form-label">New Password</label>
+      <input type="password" id="newPassword" class="form-control" formControlName="newPassword" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label">Confirm Password</label>
+      <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword" required>
+      <span *ngIf="passwordMismatch" class="error-text">Passwords do not match</span>
+    </div>
+
+    <button type="submit" class="btn btn-dark btn-lg w-100" [disabled]="changePasswordForm.invalid">
+      Change Password
+    </button>
+
+    <h6 *ngIf="passwordChangeError" class="error-text mt-3">{{ passwordChangeError }}</h6>
+    <h6 *ngIf="passwordChangeSuccess" class="success-text mt-3">{{ passwordChangeSuccess }}</h6>
+  </form>
+
+  <!-- Spinner during API call -->
+<div class="spinner" *ngIf="loading">
+  <div></div>
+</div>
+
+<!-- Redirect animation -->
+<div *ngIf="redirecting" class="text-center mt-3">
+  <div class="spinner"><div></div></div>
+  <p style="margin-top: 10px; color: gray;">Redirecting to login...</p>
+</div>
+
 </div>

@@ -1,9 +1,15 @@
-/* Pagination container */
 .pagination {
     width: 100%;
     display: block;
     clear: both;
     position: relative;
+  }
+  
+  /* Page title */
+  .page-title {
+    margin-top: 30px;
+    font-weight: 600;
+    color: #211e1d;
   }
   
   /* Loading Overlay */
@@ -47,20 +53,21 @@
   /* Table layout */
   .table {
     border: 2px solid;
-    margin: 70px auto 0 auto;
+    margin: 50px auto 0 auto;
     width: 90%;
     border-collapse: collapse;
     text-align: center;
     display: table;
   }
   
-  th, tr, td {
+  th,
+  tr,
+  td {
     border: 2px solid;
     padding: 10px;
     vertical-align: middle;
   }
   
-  /* Loading state for rows */
   .loading-row {
     opacity: 0.6;
     pointer-events: none;
@@ -86,84 +93,76 @@
     clear: both;
   }
   
-  /* Pagination info text */
   .pagination-info {
     color: #4b5563;
     font-size: 14px;
     font-weight: 500;
   }
   
-  /* Pagination buttons container */
-  .page-buttons {
-    display: inline-flex;
+  /* Pagination controls alignment */
+  .custom-pagination {
+    display: flex;
+    justify-content: center;
     gap: 6px;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
   }
   
-  /* All pagination buttons */
-  .page-buttons button {
-    margin: 0;
-    padding: 6px 12px;
-    border: 1px solid #333;
-    background-color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    min-width: 42px;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
+  /* Status badge styling */
+  .status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
   }
   
-  .page-buttons button:hover:not(:disabled) {
-    background-color: #f3f4f6;
-    border-color: #211E1D;
+  .status-badge.pending {
+    background-color: #facc15;
+    color: #1e1e1e;
   }
   
-  /* Active page button */
-  .page-buttons button.active {
-    background-color: #211E1D;
+  .status-badge.approved {
+    background-color: #22c55e;
     color: white;
-    border-color: #211E1D;
   }
   
-  .page-buttons button.active:hover {
-    background-color: #333;
+  .status-badge.rejected {
+    background-color: #ef4444;
+    color: white;
+  }
+  
+  /* Buttons */
+  .btn {
+    transition: all 0.2s ease;
+  }
+  
+  .btn:hover:not(:disabled) {
+    opacity: 0.9;
   }
   
   /* Disabled buttons */
-  .page-buttons button:disabled {
-    opacity: 0.4;
+  .btn:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
-    background-color: #f9fafb;
-    color: #9ca3af;
   }
   
-  /* Accessibility focus */
-  .page-buttons button:focus {
-    outline: 2px solid #6b7280;
-    outline-offset: 2px;
-  }
-  
-  /* Responsive design for smaller screens */
+  /* Responsive */
   @media (max-width: 768px) {
     .table {
       width: 95%;
       font-size: 14px;
     }
-    
-    th, tr, td {
+  
+    th,
+    tr,
+    td {
       padding: 8px;
     }
-    
-    .page-buttons button {
-      padding: 5px 10px;
-      min-width: 36px;
-      font-size: 13px;
-    }
-    
+  
     .pagination-info {
       font-size: 13px;
     }
   }
+  
