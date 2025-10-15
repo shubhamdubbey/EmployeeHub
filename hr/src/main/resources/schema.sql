@@ -32,10 +32,12 @@ CREATE TABLE users (
 
 -- Create LoginDetails table
 CREATE TABLE login_details (
-                                username VARCHAR(50) PRIMARY KEY,
-                                password VARCHAR(255) NOT NULL,
-                                roles VARCHAR(50) NOT NULL
+    username VARCHAR(50) PRIMARY KEY,
+    password VARCHAR(255) NOT NULL,
+    roles VARCHAR(50) NOT NULL,
+    new_user CHAR(1) DEFAULT 'Y' NOT NULL
 );
+
 
 
 -- Create gradeshistory table

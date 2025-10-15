@@ -48,6 +48,13 @@ public class HrController {
     @Autowired
     private LeaveService leaveService;
 
+    @PostMapping("/changePassword")
+    public ResponseEntity<HashMap<String, String>> changePassword(@RequestBody PasswordChangeDto passwordChangeDto) throws InvalidInputException {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", hrService.changePassword(passwordChangeDto));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginDetailsDto loginDetails) {
 
@@ -59,6 +66,12 @@ public class HrController {
         String token = jwtHelper.generateToken(userDetails);
 
         JwtResponse jwtResponse = new JwtResponse(token, loginDetails.getUsername(), userDetails.getAuthorities().toString());
+
+        if(hrService.checkFirstLogin(loginDetails.getUsername()) == 'Y') {
+        	jwtResponse.setFirstLogin(true);
+        } else {
+        	jwtResponse.setFirstLogin(false);
+        }
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
     /**
@@ -67,7 +80,7 @@ public class HrController {
 	 * 
 	 */
 	@GetMapping("getEmployeeById/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
 	public ResponseEntity<UsersDTO> retrieveEmployeeById(@PathVariable("empId")int empId) throws InvalidInputException{
 		UsersDTO response=hrService.getEmployeeById(empId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
@@ -180,7 +193,7 @@ public class HrController {
      *
      */
     @GetMapping("getLeaves/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
     public ResponseEntity<LeavesDto>  returnLeavesList(@PathVariable("empId") int empId){
 
         LeavesDto leavesDto = leaveService.getLeaveById(empId);
@@ -195,7 +208,7 @@ public class HrController {
      *
      */
     @GetMapping("getLeavesHistory/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
     public ResponseEntity<List<LeaveTrackerDTO>> returnHistoricalLeaves(@PathVariable("empId") int empId){
         List<LeaveTrackerDTO> listOfLeaves = leaveService.getHistoricalLevaesById(empId);
         ResponseEntity<List<LeaveTrackerDTO>> responseEntity = new ResponseEntity<>(listOfLeaves, HttpStatus.OK);;
@@ -209,7 +222,7 @@ public class HrController {
      *
      */
     @PostMapping("applyLeaves")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
     public ResponseEntity<LeaveRequestResponseDto>  applyLeave(@RequestBody LeaveRequestDto leaveRequestDto){
 
         ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;
