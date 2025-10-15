@@ -1,9 +1,11 @@
 package com.cts.hr.service;
 
+import com.cts.hr.dto.PasswordChangeDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.cts.hr.dto.ApprovalDto;
@@ -139,7 +141,7 @@ public class HrServiceImpl implements HrService {
         LoginDetails loginDetails = new LoginDetails();
         loginDetails.setUsername(String.valueOf(usersCreated.getEmployeeId()));
         loginDetails.setRoles(usersCreated.getRoles());
-
+        loginDetails.setNewUser('Y');
         String rawPassword = usersCreated.getFirstName().toLowerCase() + "@" + usersCreated.getEmployeeId();
         loginDetails.setPassword(passwordEncoder.encode(rawPassword));
 
@@ -159,9 +161,9 @@ public class HrServiceImpl implements HrService {
 
 
     @Override
-    @Cacheable(value = "employees", key = "'all'")
-    public List<UsersDTO> returnEmployeeList() {
-        System.out.println("Am inside the employees method of HrServiceImpl");
+    @Cacheable(value = "employees", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
+    public Page<UsersDTO> returnEmployeeList(Pageable pageable) {
+        /** System.out.println("Am inside the employees method of HrServiceImpl");
 
         Iterable<Users> usersList = usersRepository.findAll();
         List<UsersDTO> usersDTOList = new ArrayList<UsersDTO>();
@@ -182,7 +184,20 @@ public class HrServiceImpl implements HrService {
             usersDTOList.add(usersDTO);
         }
         return usersDTOList;
-
+        **/
+        Page<Users> usersPage = usersRepository.findAll(pageable);
+        return usersPage.map(users -> {
+            UsersDTO usersDTO = new UsersDTO();
+            usersDTO.setEmployeeId(users.getEmployeeId());
+            usersDTO.setFirstName(users.getFirstName());
+            usersDTO.setLastName(users.getLastName());
+            usersDTO.setEmailAddress(users.getEmailAddress());
+            usersDTO.setGrade_id(users.getGrades().getIdentification());
+            usersDTO.setRoles(users.getRoles());
+            usersDTO.setPhoneNumber(users.getPhoneNumber());
+            usersDTO.setManagerId(users.getHomeManagerId());
+            return usersDTO;
+        });
     }
 
     @Override
@@ -283,6 +298,7 @@ public class HrServiceImpl implements HrService {
             approvalDto.setRequest(approval.getRequest());
             approvalDto.setApprovalType(approval.getApprovalType());
             approvalDto.setStatus(approval.getStatus());
+            approvalDto.setApproverId(approval.getApproverId());
             approvalDtoList.add(approvalDto);
         }
         return approvalDtoList;
@@ -306,8 +322,36 @@ public class HrServiceImpl implements HrService {
                 LeaveTracker leaveTracker = optionalLeaveTracker.get();
                 leaveTracker.setStatus(status);
                 leaveTrackerRepository.save(leaveTracker);
+                if(status == ApprovalStatus.REJECTED){
+                    Optional<Leaves> leaves = leaveRepository.findById(approval.getEmployeeId());
+                    if(leaves.isPresent()){
+                        Leaves leave = leaves.get();
+                        String[] requestParts = approval.getRequest().split(" ");
+                        int daysRequested = Integer.parseInt(requestParts[1]);
+                        String leaveType = requestParts[4];
+                        switch (leaveType) {
+                            case "Sick":
+                                leave.setSickLeave(leave.getSickLeave() + daysRequested);
+                                break;
+                            case "Casual":
+                                leave.setCasualLeave(leave.getCasualLeave() + daysRequested);
+                                break;
+                            case "Earned":
+                                leave.setEarnedLeave(leave.getEarnedLeave() + daysRequested);
+                                break;
+                            case "Paternity":
+                                leave.setPaternityLeave(leave.getPaternityLeave() + daysRequested);
+                                break;
+                            default:
+                                throw new InvalidInputException("Unknown leave type: " + leaveType);
+                        }
+                        leaveRepository.save(leave);
+                    } else {
+                        throw new InvalidInputException("Leave record not found for employee ID: " + approval.getEmployeeId());
+                }
             } else {
                 throw new InvalidInputException("Associated leave request not found for approval ID: " + approvalId);
+                }
             }
         } else if(approval.getApprovalType() == ApprovalType.HOME_MANAGER){
             if(status == ApprovalStatus.APPROVED){
@@ -326,6 +370,25 @@ public class HrServiceImpl implements HrService {
             } else throw new IllegalArgumentException("Status can only be APPROVED or REJECTED");
         }
         approvalRepository.save(approval);
+        return "success";
+    }
+
+    @Override
+    public char checkFirstLogin(String username) {
+        Optional<LoginDetails> loginDetails = loginDetailsRepository.findById(username);
+        return loginDetails.map(LoginDetails::getNewUser).orElse('N');
+    }
+
+    @Override
+    public String changePassword(PasswordChangeDto passwordChangeDto) throws InvalidInputException {
+        if(!passwordChangeDto.getNewPassword().equals(passwordChangeDto.getNewPasswordConfirm())) throw new InvalidInputException("New password and confirm password do not match.");
+        Optional<LoginDetails> loginDetails = loginDetailsRepository.findById(passwordChangeDto.getUsername());
+        if(loginDetails.isEmpty()) throw new InvalidInputException("No user found with the given username.");
+        if(!passwordEncoder.matches(passwordChangeDto.getPassword(), loginDetails.get().getPassword())) throw new InvalidInputException("Old password is incorrect.");
+        LoginDetails loginDetail = loginDetails.get();
+        loginDetail.setPassword(passwordEncoder.encode(passwordChangeDto.getNewPasswordConfirm()));
+        loginDetail.setNewUser('N');
+        loginDetailsRepository.save(loginDetail);
         return "success";
     }
 }

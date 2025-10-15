@@ -13,20 +13,15 @@ import com.cts.hr.utility.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.cts.hr.service.HrService;
 
@@ -53,6 +48,13 @@ public class HrController {
     @Autowired
     private LeaveService leaveService;
 
+    @PostMapping("/changePassword")
+    public ResponseEntity<HashMap<String, String>> changePassword(@RequestBody PasswordChangeDto passwordChangeDto) throws InvalidInputException {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", hrService.changePassword(passwordChangeDto));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody LoginDetailsDto loginDetails) {
 
@@ -64,6 +66,12 @@ public class HrController {
         String token = jwtHelper.generateToken(userDetails);
 
         JwtResponse jwtResponse = new JwtResponse(token, loginDetails.getUsername(), userDetails.getAuthorities().toString());
+
+        if(hrService.checkFirstLogin(loginDetails.getUsername()) == 'Y') {
+        	jwtResponse.setFirstLogin(true);
+        } else {
+        	jwtResponse.setFirstLogin(false);
+        }
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
     /**
@@ -72,7 +80,7 @@ public class HrController {
 	 * 
 	 */
 	@GetMapping("getEmployeeById/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
 	public ResponseEntity<UsersDTO> retrieveEmployeeById(@PathVariable("empId")int empId) throws InvalidInputException{
 		UsersDTO response=hrService.getEmployeeById(empId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
@@ -151,10 +159,11 @@ public class HrController {
 	 */
 	@GetMapping("getEmployees")
     @PreAuthorize("hasAnyRole('HR','ADMIN')")
-	public ResponseEntity<List<UsersDTO>> returnEmployeeList(){
-
-		List<UsersDTO> responseList = hrService.returnEmployeeList();
-        return new ResponseEntity<>(responseList, HttpStatus.OK);
+	public ResponseEntity<Page<UsersDTO>> returnEmployeeList(Pageable pageable)
+    {
+//        Pageable page = (Pageable) PageRequest.of(pageNumber, pageSize);
+        Page<UsersDTO> response = hrService.returnEmployeeList(pageable);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	/** 
@@ -184,7 +193,7 @@ public class HrController {
      *
      */
     @GetMapping("getLeaves/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
     public ResponseEntity<LeavesDto>  returnLeavesList(@PathVariable("empId") int empId){
 
         LeavesDto leavesDto = leaveService.getLeaveById(empId);
@@ -199,7 +208,7 @@ public class HrController {
      *
      */
     @GetMapping("getLeavesHistory/{empId}")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
     public ResponseEntity<List<LeaveTrackerDTO>> returnHistoricalLeaves(@PathVariable("empId") int empId){
         List<LeaveTrackerDTO> listOfLeaves = leaveService.getHistoricalLevaesById(empId);
         ResponseEntity<List<LeaveTrackerDTO>> responseEntity = new ResponseEntity<>(listOfLeaves, HttpStatus.OK);;
@@ -213,7 +222,7 @@ public class HrController {
      *
      */
     @PostMapping("applyLeaves")
-    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('HR','ADMIN','EMPLOYEES')")
     public ResponseEntity<LeaveRequestResponseDto>  applyLeave(@RequestBody LeaveRequestDto leaveRequestDto){
 
         ResponseEntity<LeaveRequestResponseDto> responseEntity = new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);;

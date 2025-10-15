@@ -1,36 +1,105 @@
-<div class = "pagination">
+<div class="pagination">
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading employees...</p>
+  </div>
+
   <table class="table">
     <thead>
       <tr>
-        <th scope="col"> Employee Id</th>
-        <th   scope="col"> First Name</th>
-        <th  scope="col"> Last Name</th>
-        <th   scope="col"> Phone Number</th>
-        <th   scope="col"> Email Id</th>
-        <th   scope="col">Role</th>
-        <th   scope="col">Grade Id</th>
-        <th scope = "col">Home Manager</th>
-        <th scope = "col">Actions</th>
+        <th>Employee Id</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Phone Number</th>
+        <th>Email Id</th>
+        <th>Role</th>
+        <th>Grade Id</th>
+        <th>Home Manager</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let users of user | paginate:{ itemsPerPage : pageSize, currentPage : currentPage}">
-      
-        <td>{{users.employeeId}}</td>
-        <td>{{users.firstName}}</td>
-        <td>{{users.lastName}}</td>
-        <td>{{users.phoneNumber}}</td>
-        <td>{{users.emailAddress}}</td>
-        <td>{{users.role}}</td>
-        <td>{{users.grade_id}}</td>
-        <td>{{users.managerId}}</td>
+      <tr *ngFor="let user of users" [class.loading-row]="isLoading">
+        <td>{{ user.employeeId }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.phoneNumber }}</td>
+        <td>{{ user.emailAddress }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.grade_id }}</td>
+        <td>{{ user.managerId }}</td>
         <td>
-          <button style="width: 100px; margin-bottom: 10px;" [routerLink]="['/updateEmployeeGrade',users.employeeId]" class="btn btn-dark btn-sm">Update</button>
+          <button class="btn btn-dark btn-sm"
+                  [routerLink]="['/updateEmployeeGrade', user.employeeId]"
+                  [disabled]="isLoading">
+            Update
+          </button>
+        </td>
+      </tr>
+      
+      <!-- Empty state when no data -->
+      <tr *ngIf="users.length === 0 && !isLoading">
+        <td colspan="9" class="empty-state">
+          No employees found
         </td>
       </tr>
     </tbody>
   </table>
-    
-</div>
 
-<pagination-controls class = "custom-pagination" (pageChange)="currentPage = $event"></pagination-controls>
+  <!-- Enhanced Pagination Controls -->
+  <div class="page-buttons-wrapper">
+    <div class="pagination-info">
+      <span>Showing {{ getPageRangeText() }} employees</span>
+    </div>
+    
+    <div class="page-buttons" role="navigation" aria-label="Pagination">
+      <!-- First Page Button -->
+      <button
+        (click)="goToFirstPage()"
+        [disabled]="!hasPreviousPage() || isLoading"
+        title="First page"
+        aria-label="Go to first page">
+        ««
+      </button>
+
+      <!-- Previous Page Button -->
+      <button
+        (click)="goToPreviousPage()"
+        [disabled]="!hasPreviousPage() || isLoading"
+        title="Previous page"
+        aria-label="Go to previous page">
+        ‹ Prev
+      </button>
+
+      <!-- Page Numbers -->
+      <button
+        *ngFor="let page of pageNumbers"
+        (click)="onPageClick(page)"
+        [class.active]="page === currentPage"
+        [disabled]="isLoading"
+        [attr.aria-current]="page === currentPage ? 'page' : null"
+        [title]="'Go to page ' + (page + 1)">
+        {{ page + 1 }}
+      </button>
+
+      <!-- Next Page Button -->
+      <button
+        (click)="goToNextPage()"
+        [disabled]="!hasNextPage() || isLoading"
+        title="Next page"
+        aria-label="Go to next page">
+        Next ›
+      </button>
+
+      <!-- Last Page Button -->
+      <button
+        (click)="goToLastPage()"
+        [disabled]="!hasNextPage() || isLoading"
+        title="Last page"
+        aria-label="Go to last page">
+        »»
+      </button>
+    </div>
+  </div>
+</div>

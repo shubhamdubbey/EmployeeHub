@@ -18,6 +18,17 @@ public class LoginDetails {
     @Enumerated(EnumType.STRING)
     private Roles roles;
 
+    @Column(name = "new_user")
+    private char newUser;
+
+    public char getNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(char newUser) {
+        this.newUser = newUser;
+    }
+
     public String getUsername() {
         return username;
     }

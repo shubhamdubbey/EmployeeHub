@@ -123,6 +123,8 @@ public class LeaveServiceImpl implements LeaveService {
         leaveTracker.setTo(leavesRequestDto.getToDate());
         leaveTracker.setReason(leavesRequestDto.getReason());
         leaveTracker.setStatus(ApprovalStatus.PENDING);
+        System.out.println("before savig to rtracker");
+        leaveTrackerRepository.save(leaveTracker);
 
         // Successful response
         response.setApplied(true);
@@ -131,8 +133,6 @@ public class LeaveServiceImpl implements LeaveService {
         Optional<Users> optionalUser = usersRepository.findById(leavesRequestDto.getEmployeeId());
         if(optionalUser.isEmpty()) throw new IllegalArgumentException("No user found with the given employee ID.");
         else if(optionalUser.get().getHomeManagerId() == 0) return response;
-
-        leaveTrackerRepository.save(leaveTracker);
 
         Approvals approvals = new Approvals();
         approvals.setId(leaveTracker.getId());

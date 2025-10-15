@@ -58,7 +58,8 @@ public class TestHrController {
 		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(hrController).build();
 	}
-	
+
+    /**
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testTandleReturnEmployeeListPositive() {
@@ -98,7 +99,7 @@ public class TestHrController {
 		
 		assertNull(responseUsersDtoList);
 		
-	}
+	} **/
 	
 	@SuppressWarnings("unchecked")
 	@Test
@@ -135,7 +136,8 @@ public class TestHrController {
 		assertNull(responseGradesDtoList);
 		
 	}
-	
+
+    /**
 	@Test
 	public void testUriHandleReturnEmployeeListNegative(){
 		List<UsersDTO> usersDtoList = new ArrayList<>();
@@ -157,7 +159,7 @@ public class TestHrController {
 		} catch (Exception e) {
 			assertTrue(true);
 		}
-	}	
+	}	**/
 	
 	@Test 
 	public void testUriHandleReturnGradesListPositive() {

@@ -8,11 +8,20 @@ public class JwtResponse {
     private String token;
     private String username;
     private String role;
+    private boolean firstLogin;
 
     public JwtResponse(String token, String username, String role) {
         this.token = token;
         this.username = username;
         this.role = role;
+    }
+
+    public boolean getFirstLogin() {
+        return firstLogin;
+    }
+
+    public void setFirstLogin(boolean firstLogin) {
+        this.firstLogin = firstLogin;
     }
 
     public String getToken() {

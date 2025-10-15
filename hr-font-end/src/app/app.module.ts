@@ -18,6 +18,7 @@ import { ApplyLeavesComponent } from './component/apply-leaves/apply-leaves.comp
 import { LeaveHistoryComponent } from './component/leave-history/leave-history.component';
 import { PersonalDetailsComponent } from './component/personal-details/personal-details.component';
 import { ActionsComponent } from './component/actions/actions.component';
+import { ChangePasswordComponent } from './component/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ActionsComponent } from './component/actions/actions.component';
     ApplyLeavesComponent,
     LeaveHistoryComponent,
     PersonalDetailsComponent,
-    ActionsComponent
+    ActionsComponent,
+    ChangePasswordComponent
     ],
   imports: [
     BrowserModule,
