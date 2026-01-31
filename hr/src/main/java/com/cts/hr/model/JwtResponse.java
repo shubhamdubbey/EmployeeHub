@@ -10,6 +10,17 @@ public class JwtResponse {
     private String role;
     private boolean firstLogin;
 
+    public JwtResponse(){
+
+    }
+
+    public JwtResponse(String token, String username, String role, boolean firstLogin) {
+        this.token = token;
+        this.username = username;
+        this.role = role;
+        this.firstLogin = firstLogin;
+    }
+
     public JwtResponse(String token, String username, String role) {
         this.token = token;
         this.username = username;
